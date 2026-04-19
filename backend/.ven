@@ -1,0 +1,10 @@
+MY_SECRET=change_this_secret
+PORT=8000
+REACT_APP_API_URL=http://localhost:5173
+PRE_FIX_AUTH=/api/auth
+PRE_FIX_VIDEO=/api/video
+PRE_FIX_USER=/api/user
+OUTPUT_DIR=./output
+UPLOAD_DIR=./upload
+REFDATA_DIR=./reference
+LIST_FOLDER_DIR=/list-files

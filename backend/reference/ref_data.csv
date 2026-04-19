@@ -1,0 +1,18 @@
+img;title;description
+1.png;STOP;Pls stop
+2.png;ATTENTION;Pls attention
+3.png;BUS-STOP;Bus stop area
+4.png;Curve;Curve ahead
+5.png;Side Road;Side road ahead
+6.png;Reverse Turn;Reverse turn ahead
+7.png;Land End;Land end ahead
+8.png;Merge;Merge ahead
+9.png;Cross Road;Cross road ahead
+10.png;Winding Road;Winding road ahead
+11.png;Sharp Left;Sharp left turn ahead
+12.png;Sharp Right;Sharp right turn ahead
+13.png;Left Curve;Left curve ahead
+14.png;Right Curve;Right curve ahead
+15.png;Traffic Signal;Traffic signal ahead
+16.png;One Direction;One direction ahead
+17.png;Bicycle Crossing;Bicycle crossing ahead

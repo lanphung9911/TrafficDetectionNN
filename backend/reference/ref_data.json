@@ -1,0 +1,87 @@
+[
+    {
+        "img": "1.png",
+        "title": "STOP",
+        "description": "Pls stop"
+    },
+    {
+        "img": "2.png",
+        "title": "ATTENTION",
+        "description": "Pls attention"
+    },
+    {
+        "img": "3.png",
+        "title": "BUS-STOP",
+        "description": "Bus stop area"
+    },
+    {
+        "img": "4.png",
+        "title": "Curve",
+        "description": "Curve ahead"
+    },
+    {
+        "img": "5.png",
+        "title": "Side Road",
+        "description": "Side road ahead"
+    },
+    {
+        "img": "6.png",
+        "title": "Reverse Turn",
+        "description": "Reverse turn ahead"
+    },
+    {
+        "img": "7.png",
+        "title": "Land End",
+        "description": "Land end ahead"
+    },
+    {
+        "img": "8.png",
+        "title": "Merge",
+        "description": "Merge ahead"
+    },
+    {
+        "img": "9.png",
+        "title": "Cross Road",
+        "description": "Cross road ahead"
+    },
+    {
+        "img": "10.png",
+        "title": "Winding Road",
+        "description": "Winding road ahead"
+    },
+    {
+        "img": "11.png",
+        "title": "Sharp Left",
+        "description": "Sharp left turn ahead"
+    },
+    {
+        "img": "12.png",
+        "title": "Sharp Right",
+        "description": "Sharp right turn ahead"
+    },
+    {
+        "img": "13.png",
+        "title": "Left Curve",
+        "description": "Left curve ahead"
+    },
+    {
+        "img": "14.png",
+        "title": "Right Curve",
+        "description": "Right curve ahead"
+    },
+    {
+        "img": "15.png",
+        "title": "Traffic Signal",
+        "description": "Traffic signal ahead"
+    },
+    {
+        "img": "16.png",
+        "title": "One Direction",
+        "description": "One direction ahead"
+    },
+    {
+        "img": "17.png",
+        "title": "Bicycle Crossing",
+        "description": "Bicycle crossing ahead"
+    }
+]
