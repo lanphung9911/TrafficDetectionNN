@@ -1,0 +1,19 @@
+.content-area > .content-row {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+}
+.btn-camera {
+  width: 100%;
+  padding: 10px;
+  background-color: #fac3c3;
+  color: var(--primary-orange);
+  border: none;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.btn-camera.active {
+  background-color: #ef4444;
+}

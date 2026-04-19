@@ -1,0 +1,43 @@
+{
+    "UserGUI_describe":
+    {
+        "header":
+        {
+            "Title": "RoadSign Tracker System",
+            "Version": "version v0.1"
+        },
+        "DashboardTitle":
+        {
+            "MainTitle": "User dashboard",
+            "SubTitle": "Dashboard for user that can monitoring the map with traffic sign located or run-time detected when vehicle"
+        },
+        "Navi_Menu":
+        {
+            "menu_RunTime": "Runtime monitoring",
+            "menu_Static": "Static monitoring",
+            "menu_Reference": "Reference",
+            "menu_Feedback": "Feedback"
+        },
+        "FPS_Option":
+        {
+            "Title": "FPS",
+            "option_1": "5",
+            "option_2": "15",
+            "option_3": "30"
+        },
+        "Speed_Option":
+        {
+            "Title": "Speed",
+            "option_1": "1x",
+            "option_2": "2x",
+            "option_3": "3x"
+        },
+        "Control_Panel":
+        {
+            "Title": "Select",
+            "Next_Image": ">",
+            "Previous_Image": "<",
+            "reset": "Reset"
+        }
+    }
+}
