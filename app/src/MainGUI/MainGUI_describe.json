@@ -1,0 +1,65 @@
+{
+    "MainGUI_describe":
+    {
+        "Title": "Traffic Sign System",
+        "Version": "Version: v1.0",
+        "ShortDescription": "An end-to-end system that uses computer vision and deep learning to automatically detect traffic signs from images and videos, map their locations, and build a dynamic inventory. \n\nBy visualizing results on an interactive map and providing analytics, it supports smart city management and intelligent transportation systems.",
+        "WhatHot":
+        {
+            "text_1": "WHAT'S NEW",
+            "text_2": "Coming new model"
+        },
+        "WhatNew":
+        {
+            "text_1": "WHAT'S HOT",
+            "text_2": "Accuracy: 80%"
+        },
+        "Feature":
+        {
+            "Frame_1":
+            {
+                "Title": "Attention",
+                "Image": "../assets/sign.png"
+            },
+            "Frame_2":
+            {
+                "Title": "Model training",
+                "Image": "../assets/model.png"
+            },
+            "Frame_3":
+            {
+                "Title": "CNN",
+                "Image": "../assets/CNN.png"
+            },
+            "Frame_4":
+            {
+                "Title": "High accuracy",
+                "Image": "../assets/accuracy.png"
+            }
+        },
+        "Contact":
+        {
+            "Email": "Email: roadisgn_demo@hcmut.edu.vn",
+            "GitHub": "GitHub: TBU",
+            "LinkedIn": "LinkedIn: TBU"
+        },
+        "Role":
+        {
+            "DataScientist":
+            {
+                "Main": "DATA SCIENTIST",
+                "Sub": "Analyzing\ndevelopment"
+            },
+            "User":
+            {
+                "Main": "USER",
+                "Sub": "Your traffic sign\nour responsibility"
+            },
+            "Admin":
+            {
+                "Main": "ADMIN",
+                "Sub": "Management\nFeedback"
+            }
+        }
+    }
+}

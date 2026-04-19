@@ -1,0 +1,461 @@
+/* =========================
+   MAIN LAYOUT
+========================= */
+
+.MainGUI_Login {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(0.8);
+
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 40px;
+  gap: 41px;
+
+  width: 1350px;
+  height: 950px;
+
+  background: #F6F8FC;
+  border-radius: 32px;
+}
+
+/* =========================
+   INTRO FRAME
+========================= */
+
+.MainGUI_Frame-Introduce {
+  position: relative;
+
+  width: 683px;
+  height: 936px;
+
+  background: #21437D;
+  border-radius: 32px;
+
+  flex: none;
+}
+
+/* TITLE */
+.MainGUI_Frame-Introduce_Text-title {
+  position: absolute;
+  width: 683px;
+  height: 63px;
+  left: 0;
+  top: 20px;
+
+  font-family: 'Merriweather';
+  font-weight: 700;
+  font-size: 70px;
+  line-height: 56px;
+  text-align: center;
+
+  color: #FFFFFF;
+}
+
+/* DESCRIPTION */
+.MainGUI_Frame-Introduce_Text-description {
+  position: absolute;
+  width: 623px;
+  height: 168px;
+  left: 28px;
+  top: 146px;
+
+  font-family: 'Merriweather';
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 25px;
+  text-align: justify;
+
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* CONTACT */
+.MainGUI_Frame-Introduce_Frame-Contact {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  padding: 0px 35px;
+
+  position: absolute;
+  width: 418px;
+  height: 114px;
+  right: 20px;
+  bottom: 20px;
+
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+}
+
+/* CONTACT TEXT */
+.MainGUI_Frame-Introduce_Frame-Contact_Text-1,
+.MainGUI_Frame-Introduce_Frame-Contact_Text-2,
+.MainGUI_Frame-Introduce_Frame-Contact_Text-3 {
+  width: 348px;
+  height: 38px;
+
+  font-family: 'Merriweather';
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 22px;
+
+  display: flex;
+  align-items: center;
+
+  color: #FFFFFF;
+}
+
+/* =========================
+   INFO BOX (GRID)
+========================= */
+
+.MainGUI_Frame-Introduce_Frame-Infor {
+  box-sizing: border-box;
+  position: absolute;
+  width: 418px;
+  height: 375px;
+  left: 233px;
+  top: 371px;
+
+  background: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 170px);
+  grid-template-rows: repeat(2, 170px);
+  gap: 10px;
+  padding: 10px;
+  justify-content: center;
+}
+
+/* FEATURE BOX */
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-1,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-2,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-3,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-4 {
+  box-sizing: border-box;
+
+  width: 170px;
+  height: 170px;
+
+  background: #d9e9fe;
+  border: 1px solid #f5f5f5;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px 5px; /* 5px from bottom */
+  gap: 9px;
+}
+
+/* IMAGE */
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-1_Img-1,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-2_Img-1,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-3_Img-1,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-4_Img-1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 120px; /* reserved area for image */
+  padding-top: 6px;
+}
+
+/* ACTUAL IMG — keep consistent size, preserve aspect ratio */
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-1_Img-1 img,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-2_Img-1 img,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-3_Img-1 img,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-4_Img-1 img {
+  max-width: 130px;
+  max-height: 130px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* TEXT */
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-1_Text-1,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-2_Text-1,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-3_Text-1,
+.MainGUI_Frame-Introduce_Frame-Infor_Frame-4_Text-1 {
+  font-family: 'Merriweather';
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 18px;
+  text-align: center;
+  margin: 0;
+  padding-bottom: 5px; /* ensure 5px from bottom */
+  color: #000000;
+}
+
+/* =========================
+   SMALL LEFT CARDS
+========================= */
+
+.MainGUI_Frame-Introduce_Frame-1 {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 175px;
+  height: 175px;
+  top: 371px;
+  left: 28px;
+  background: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  gap: 6px; /* GAPS of children */
+}
+
+.MainGUI_Frame-Introduce_Frame-1_Text-1 {
+  font-family: 'Merriweather';
+  font-size: 25px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.MainGUI_Frame-Introduce_Frame-1_Text-2 {
+  font-family: 'Merriweather';
+  font-size: 20px;
+  font-weight: 700;
+  color: #2721ec;
+}
+
+.MainGUI_Frame-Introduce_Frame-2 {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 175px;
+  height: 175px;
+  top: 571px;
+  left: 28px;
+
+  background: #FFFFFF;
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 28px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  gap: 6px; /* GAPS of children */
+}
+
+.MainGUI_Frame-Introduce_Frame-2_Text-1 {
+  font-family: 'Merriweather';
+  font-size: 25px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.MainGUI_Frame-Introduce_Frame-2_Text-2 {
+  font-family: 'Merriweather';
+  font-size: 20px;
+  font-weight: 700;
+  color: #2721ec;
+}
+
+/* =========================
+   VERSION TEXT
+========================= */
+
+.MainGUI_Frame-Introduce_Text-version {
+  position: absolute;
+  left: 521px;
+  top: 83px;
+
+  font-family: 'Merriweather';
+  font-weight: 700;
+  font-size: 18px;
+
+  color: #FFFFFF;
+}
+
+/* =========================
+   LOGIN FRAME
+========================= */
+
+.MainGUI_Frame-Login {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 96px 11px;
+  gap: 60px;
+
+  width: 636px;
+  height: 935px;
+
+  background: #FFFFFF;
+  border: 1px solid #E7ECF3;
+  box-shadow: 0px 8px 16px rgba(75, 125, 194, 0.06);
+  border-radius: 24px;
+}
+
+/* USER ACCESS */
+.MainGUI_Frame-Login_Frame-UserAccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 17px;
+
+  width: 614px;
+}
+
+/* TITLE */
+.MainGUI_Frame-Login_Frame-UserAccess_Text-1 {
+  font-family: 'Merriweather';
+  font-weight: bold;
+  font-size: 55px;
+  margin-top: 50px;
+  margin-bottom: 70px;
+  text-align: center;
+  color: #122033;
+}
+
+/* INPUT ROWS */
+.MainGUI_Frame-Login_Frame-UserAccess_Frame-email,
+.MainGUI_Frame-Login_Frame-UserAccess_Frame-pw {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 584px;
+}
+
+/* INPUT BOX */
+.MainGUI_Frame-Login_Frame-UserAccess_Frame-email_Text-1,
+.MainGUI_Frame-Login_Frame-UserAccess_Frame-pw_Text-1 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  padding: 18px;
+  width: 100px;
+  color: #122033;
+  background: #FFFFFF;
+}
+
+.MainGUI_Frame-Login_Frame-UserAccess_Frame-email_Box,
+.MainGUI_Frame-Login_Frame-UserAccess_Frame-pw_Box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+  width: 461px;
+
+  background: #FFFFFF;
+  border: 1px solid #E7ECF3;
+  border-radius: 18px;
+  caret-color: black;
+  background: transparent; 
+  resize: none; 
+
+  word-break: break-word;
+}
+
+/* ROLE */
+.MainGUI_Frame-Login_Frame-Role {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+/* ROLE BOX */
+.MainGUI_Frame-Login_Frame-Role_Frame-DS,
+.MainGUI_Frame-Login_Frame-Role_Frame-User,
+.MainGUI_Frame-Login_Frame-Role_Frame-Ad {
+  width: 203px;
+  height: 117px;
+
+  background: #DEE7F7;
+  border-radius: 20px;
+
+  box-sizing: border-box;
+  padding: 8px;
+  display: flex;
+  flex-direction: column; /* 2 hàng chữ */
+  justify-content: center; /* căn giữa theo chiều dọc */
+  align-items: center; /* căn giữa theo chiều ngang */
+  gap: 15px; /* khoảng cách giữa 2 hàng */
+  cursor: pointer;
+}
+
+/* ROLE TEXT OF EACH BOX */
+.MainGUI_Frame-Login_Frame-Role_Frame-DS .line-1,
+.MainGUI_Frame-Login_Frame-Role_Frame-User .line-1,
+.MainGUI_Frame-Login_Frame-Role_Frame-Ad .line-1 {
+  font-family: 'Merriweather';
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 22px;
+  color: #122033;
+}
+
+.MainGUI_Frame-Login_Frame-Role_Frame-DS .line-2,
+.MainGUI_Frame-Login_Frame-Role_Frame-User .line-2,
+.MainGUI_Frame-Login_Frame-Role_Frame-Ad .line-2 {
+  font-family: 'Merriweather';
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 22px;
+  color: #666e77;
+}
+
+.MainGUI_Frame-Login_Frame-Role_Frame-DS.active,
+.MainGUI_Frame-Login_Frame-Role_Frame-User.active,
+.MainGUI_Frame-Login_Frame-Role_Frame-Ad.active {
+  background: #76a3e3;
+  color: #FFFFFF;
+}
+
+/* LOGIN BUTTON */
+.MainGUI_Frame-Login_Frame-LoginButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  text-align: center;
+  width: 204px;
+  height: 85px;
+
+  background: #6189c2;
+  border-radius: 16px;
+}
+
+.MainGUI_Frame-Login_Frame-LoginButton_Text-1 {
+  font-family: 'Merriweather';
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 28px;
+
+  color: #FFFFFF;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
