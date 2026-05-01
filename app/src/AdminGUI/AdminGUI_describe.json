@@ -1,0 +1,67 @@
+{
+    "role": "Admin",
+    "header":
+    {
+        "Title": "RoadSign Tracker System"
+    },
+    "DashboardTitle":
+    {
+        "MainTitle": "Admin dashboard",
+        "SubTitle": "Dashboard for admin that can monitor the system and receive feedback from users"
+    },
+    "Navi_Menu":
+    {
+        "menu_Feedback": "Feedback list",
+        "menu_UserMonitor": "User monitoring",
+        "menu_Archive": "Archive"
+    },
+    "Control_Panel":
+    {
+        "Title": "Select",
+        "Next_Image": ">",
+        "Previous_Image": "<",
+        "reset": "Reset"
+    },
+    "Feedback_Section":
+    {
+        "Title_1": "List of In-progress Feedback",
+        "Title_2": "List of Archived Feedback",
+        "SubTitle_1": "Users",
+        "SubTitle_2": "Rating",
+        "SubTitle_3": "Type",
+        "SubTitle_4": "Attachment",
+        "SubTitle_5": "Status",
+        "SubTitle_6": "Action"
+    },
+    "Feedback_quickText":
+    {
+        "Analyze": "Analyzing the feedback for further action.",
+        "Spam": "Spam feedback, ignore.",
+        "Close": "Closing the feedback without any further action."
+    },
+    "Metric_label":
+    {
+        "metric_1": "Average rating",
+        "metric_2": "Total feedback",
+        "metric_3": "Closed feedback",
+        "metric_4": "Spam feedback"
+    },
+    "Monitor_label":
+    {
+        "Title_1": "Users & permissions",
+        "SubTitle_1": "Role-based access setup for the stakeholder demo.",
+        "Title_2": "Get log from system",
+        "SubTitle_2": "Admin can tracking system by backend log.",
+        "Title_3": "Audit log",
+        "SubTitle_3": "Track overrides, confidence rule changes, and report exports.",
+        "Title_4": "Deployment snapshot",
+        "SubTitle_4": "Summary of the model version, artifact, and active policy used in the demo app."
+    },
+    "Snapshot":
+    {
+        "Title_1": "Version",
+        "Title_2": "Artifact",
+        "Title_3": "Reviewers",
+        "Title_4": "Exports"
+    }
+}

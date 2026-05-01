@@ -1,17 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainGUI.css";
 import MainGUI_describe from "./MainGUI_describe.json";
 import { img_assets } from "../assets";
 import { handleLogin } from "./login_handle";
+import { getSystemVersion } from "../utils/get_system_version";
+import { saveLogs } from "../utils/savelog";
 
 export default function MainGUI() {
-  const frames = Object.values(MainGUI_describe.MainGUI_describe.Feature);
+  const frames = Object.values(MainGUI_describe.Feature);
   const [email, setEmail] = useState("");
   const [pwd, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
+
+  {/* get system version from backend and display it */}
+  const [systemVersion, setSystemVersion] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const ver = await getSystemVersion();
+      if (!mounted || ver === null || ver === undefined) return;
+      setSystemVersion(ver);
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   {/* on click login button */}
   const onLoginButtonClick = async () => {
@@ -25,20 +39,31 @@ export default function MainGUI() {
       return;
     }
     try {
-      localStorage.setItem("userEmail", email);
-      navigate("/UserGUI_runtime");
+      /* Store email in localStorage for later use in other components */
+      localStorage.setItem("loginEmail", email);
       await handleLogin({ email, password: pwd, role });
+
+      {/* navigate to different pages based on role */}
       if (role === "DataScientist") {
-        navigate("/UserGUI_runtime");
+        navigate("/DataScientistGUI_history");
       } 
       else if (role === "Admin") {
-        navigate("/UserGUI_runtime");
+        navigate("/AdminGUI_feedback");
       } 
       else if (role === "User") {
         navigate("/UserGUI_runtime");
       }
     } catch (err) {
       setLoginError(err.message || "Login failed");
+
+      /* save log to backend */
+      await saveLogs(email_name, [{
+        timestamp: new Date().toISOString(),
+        email_name: email_name,
+        navigateItem: navItems,
+        event: "login_failed",
+        error: err.message
+      }]);
     }
   };
 
@@ -50,35 +75,35 @@ export default function MainGUI() {
       {/* ================= LEFT - INTRO ================= */}
       <div className="MainGUI_Frame-Introduce">
         <div className="MainGUI_Frame-Introduce_Text-title">
-          {MainGUI_describe.MainGUI_describe.Title}
+          {MainGUI_describe.Title}
         </div>
 
         <div className="MainGUI_Frame-Introduce_Text-version">
-          {MainGUI_describe.MainGUI_describe.Version}
+          {systemVersion ? `Version: ${systemVersion}` : "Loading version..."}
         </div>
 
         <div className="MainGUI_Frame-Introduce_Text-description"
               style={{whiteSpace: "pre-line"}}>
-          {MainGUI_describe.MainGUI_describe.ShortDescription}
+          {MainGUI_describe.ShortDescription}
         </div>
 
         {/* SMALL LEFT BOX 1 */}
         <div className="MainGUI_Frame-Introduce_Frame-1">
           <div className="MainGUI_Frame-Introduce_Frame-1_Text-1">
-              {MainGUI_describe.MainGUI_describe.WhatNew.text_1}
+              {MainGUI_describe.WhatNew.text_1}
           </div>
           <div className="MainGUI_Frame-Introduce_Frame-1_Text-2">
-              {MainGUI_describe.MainGUI_describe.WhatNew.text_2}
+              {MainGUI_describe.WhatNew.text_2}
           </div>
         </div>
 
         {/* SMALL LEFT BOX 2 */}
         <div className="MainGUI_Frame-Introduce_Frame-2">
           <div className="MainGUI_Frame-Introduce_Frame-2_Text-1">
-            {MainGUI_describe.MainGUI_describe.WhatHot.text_1}
+            {MainGUI_describe.WhatHot.text_1}
           </div>
           <div className="MainGUI_Frame-Introduce_Frame-2_Text-2">
-            {MainGUI_describe.MainGUI_describe.WhatHot.text_2}
+            {MainGUI_describe.WhatHot.text_2}
           </div>
         </div>
 
@@ -101,13 +126,13 @@ export default function MainGUI() {
         {/* CONTACT */}
         <div className="MainGUI_Frame-Introduce_Frame-Contact">
           <div className="MainGUI_Frame-Introduce_Frame-Contact_Text-1">
-            {MainGUI_describe.MainGUI_describe.Contact.Email}
+            {MainGUI_describe.Contact.Email}
           </div>
           <div className="MainGUI_Frame-Introduce_Frame-Contact_Text-2">
-            {MainGUI_describe.MainGUI_describe.Contact.GitHub}
+            {MainGUI_describe.Contact.GitHub}
           </div>
           <div className="MainGUI_Frame-Introduce_Frame-Contact_Text-3">
-            {MainGUI_describe.MainGUI_describe.Contact.LinkedIn}
+            {MainGUI_describe.Contact.LinkedIn}
           </div>
         </div>
 
@@ -188,10 +213,10 @@ export default function MainGUI() {
             onClick={() => setRole(role !== "DataScientist" ? "DataScientist" : "")}
             style={{whiteSpace: "pre-line"}}>
             <p className="line-1">
-              {MainGUI_describe.MainGUI_describe.Role.DataScientist.Main}
+              {MainGUI_describe.Role.DataScientist.Main}
             </p>
             <p className="line-2">
-              {MainGUI_describe.MainGUI_describe.Role.DataScientist.Sub}
+              {MainGUI_describe.Role.DataScientist.Sub}
             </p>
           </button>
 
@@ -204,10 +229,10 @@ export default function MainGUI() {
             onClick={() => setRole(role !== "User" ? "User" : "")}
             style={{whiteSpace: "pre-line"}}>
             <p className="line-1">
-              {MainGUI_describe.MainGUI_describe.Role.User.Main}
+              {MainGUI_describe.Role.User.Main}
             </p>
             <p className="line-2">
-              {MainGUI_describe.MainGUI_describe.Role.User.Sub}
+              {MainGUI_describe.Role.User.Sub}
             </p>
           </button>
 
@@ -220,10 +245,10 @@ export default function MainGUI() {
             onClick={() => setRole(role !== "Admin" ? "Admin" : "")}
             style={{whiteSpace: "pre-line"}}>
             <p className="line-1">
-              {MainGUI_describe.MainGUI_describe.Role.Admin.Main}
+              {MainGUI_describe.Role.Admin.Main}
             </p>
             <p className="line-2">
-              {MainGUI_describe.MainGUI_describe.Role.Admin.Sub}
+              {MainGUI_describe.Role.Admin.Sub}
             </p>
           </button>
         </div>

@@ -3,13 +3,26 @@ import { useNavigate } from "react-router-dom";
 import './UserGUI_ref.css';
 import UserGUI_describe from "./UserGUI_describe.json";
 import { API_BASE_URL } from "../config";
+import { getSystemVersion } from "../utils/get_system_version";
 
 const UserGUI_reference = () => {
   const navItems = "menu_Reference";
   const [refData, setRefData] = useState([]);
   const navigate = useNavigate();
-  const email = localStorage.getItem("userEmail");
+  const email = localStorage.getItem("loginEmail");
   const email_name = email ? email.split("@")[0] : "User";
+
+  {/* get system version from backend and display it */}
+  const [systemVersion, setSystemVersion] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const ver = await getSystemVersion();
+      if (!mounted || ver === null || ver === undefined) return;
+      setSystemVersion(ver);
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   const onNavItemClick = (item) => {
     if (item === "menu_RunTime") {
@@ -78,21 +91,21 @@ const UserGUI_reference = () => {
   const currentPageData = refData.slice(startIndex, endIndex);
 
   return (
-    <div className="UserGUI_Frame">
+    <div className="CommonGUI_Frame">
       <div className="dashboard-wrapper">
         {/* Header */}
         <header className="dashboard-header">
           <div className="header-tags">
             <span className="tag tag-green">
-              <span className="dot dot-green"></span> {UserGUI_describe.UserGUI_describe.header.Title}
+              <span className="dot dot-green"></span> {UserGUI_describe.header.Title}
             </span>
             <span className="tag tag-orange">
-              <span className="dot dot-orange"></span> {UserGUI_describe.UserGUI_describe.header.Version}
+              <span className="dot dot-orange"></span> {systemVersion ? `Version: ${systemVersion}` : "Loading version..."}
             </span> 
           </div>
-          <h1 className="dashboard-title"> {UserGUI_describe.UserGUI_describe.DashboardTitle.MainTitle} </h1>
+          <h1 className="dashboard-title"> {UserGUI_describe.DashboardTitle.MainTitle} </h1>
           <p className="dashboard-subtitle">
-            {UserGUI_describe.UserGUI_describe.DashboardTitle.SubTitle}
+            {UserGUI_describe.DashboardTitle.SubTitle}
           </p>
         </header>
 
@@ -103,29 +116,29 @@ const UserGUI_reference = () => {
             <div className="user-profile">
               <span className="welcome-text">WELCOME!</span>
               <h2 className="user-name">{email_name}</h2>
-              <span className="user-role">Role: User</span>
+              <span className="user-role">Role: {UserGUI_describe.role}</span>
             </div>
 
             <nav className="nav-menu">
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_RunTime")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_RunTime}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_RunTime}</span>
               </button>
               <button className={`nav-item `}
               onClick={() => onNavItemClick("menu_Static")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Static}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Static}</span>
               </button>
               <button className={`nav-item ${navItems === "menu_Reference" ? "active" : ""}`}
               onClick={() => onNavItemClick("menu_Reference")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Reference}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Reference}</span>
               </button>
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_Feedback")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Feedback}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Feedback}</span>
               </button>
             </nav>
 
@@ -133,7 +146,7 @@ const UserGUI_reference = () => {
               {/* Control settings */}
               <div className="control-settings">
               <div className="setting-row">
-                <span className="setting-label">{UserGUI_describe.UserGUI_describe.Control_Panel.Title}</span>
+                <span className="setting-label">{UserGUI_describe.Control_Panel.Title}</span>
                 <div className="setting-options">
                   <button 
                     className="option-btn" 
@@ -141,16 +154,16 @@ const UserGUI_reference = () => {
                     disabled={currentPage === 0}
                     style={{ opacity: currentPage === 0 ? 0.5 : 1, cursor: currentPage === 0 ? 'not-allowed' : 'pointer' }}
                   >
-                    {UserGUI_describe.UserGUI_describe.Control_Panel.Previous_Image}
+                    {UserGUI_describe.Control_Panel.Previous_Image}
                   </button>
                   <button className="option-btn" onClick={() => onNextImgClick()}
                     disabled={currentPage >= totalPages - 1}
                     style={{ opacity: currentPage >= totalPages - 1 ? 0.5 : 1, cursor: currentPage >= totalPages - 1 ? 'not-allowed' : 'pointer' }}
                   >
-                    {UserGUI_describe.UserGUI_describe.Control_Panel.Next_Image}
+                    {UserGUI_describe.Control_Panel.Next_Image}
                   </button>
                   <button className="option-btn" onClick={() => onResetClick()}>
-                    {UserGUI_describe.UserGUI_describe.Control_Panel.reset}
+                    {UserGUI_describe.Control_Panel.reset}
                   </button>
                 </div>
               </div>

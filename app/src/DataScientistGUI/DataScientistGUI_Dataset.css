@@ -1,0 +1,138 @@
+.cnn-panel-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 18px;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.cnn-panel-left,
+.cnn-panel-right {
+  min-width: 0;
+}
+
+.cnn-panel-title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 900;
+  color: #4b5563;
+}
+
+.class-chart-frame {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.9));
+  border: 1px solid #edf2f7;
+  overflow: hidden;
+}
+
+.class-chart-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.class-chart-label {
+  font-size: 12px;
+  fill: #94a3b8;
+}
+
+.class-chart-axis {
+  font-size: 11px;
+  fill: #cbd5e1;
+}
+
+.class-chart-tick {
+  font-size: 11px;
+  fill: #94a3b8;
+}
+
+.dataset-info-banner {
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  box-sizing: border-box;
+}
+
+.dataset-info-banner strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.dataset-info-banner p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.dataset-spec-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dataset-spec-card {
+  min-height: 72px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.dataset-spec-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.dataset-spec-value {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 700;
+}
+
+.cnn-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cnn-action-btn {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 6px;
+  border: 1px solid #dbe3ee;
+  background: #ffffff;
+  color: #667085;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.cnn-action-btn.primary {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.cnn-action-btn.secondary {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.cnn-action-btn.ghost {
+  background: #f8fafc;
+}

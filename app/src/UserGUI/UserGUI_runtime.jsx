@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './UserGUI_runtime.css';
 import UserGUI_describe from "./UserGUI_describe.json";
 import { handleVideoOption, handleVideoSubmit } from "./submit_handle";
 import { API_BASE_URL } from "../config";
+import { getSystemVersion } from "../utils/get_system_version";
 
 const UserGUI_runtime = () => {
   const navItems = "menu_RunTime";
-  const email = localStorage.getItem("userEmail");
+  const email = localStorage.getItem("loginEmail");
   const email_name = email ? email.split("@")[0] : "User";
+
+  {/* get system version from backend and display it */}
+  const [systemVersion, setSystemVersion] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const ver = await getSystemVersion();
+      if (!mounted || ver === null || ver === undefined) return;
+      setSystemVersion(ver);
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   {/* items selected in navigation menu, default is "menu_RunTime" */}
   const navigate = useNavigate();
@@ -55,14 +68,14 @@ const UserGUI_runtime = () => {
 
   {/* FPS and Speed options click handler */}
   const FPS_OPTIONS = [
-    UserGUI_describe.UserGUI_describe.FPS_Option.option_1,
-    UserGUI_describe.UserGUI_describe.FPS_Option.option_2,
-    UserGUI_describe.UserGUI_describe.FPS_Option.option_3,
+    UserGUI_describe.FPS_Option.option_1,
+    UserGUI_describe.FPS_Option.option_2,
+    UserGUI_describe.FPS_Option.option_3,
   ];
   const SPEED_OPTIONS = [
-    UserGUI_describe.UserGUI_describe.Speed_Option.option_1,
-    UserGUI_describe.UserGUI_describe.Speed_Option.option_2,
-    UserGUI_describe.UserGUI_describe.Speed_Option.option_3,
+    UserGUI_describe.Speed_Option.option_1,
+    UserGUI_describe.Speed_Option.option_2,
+    UserGUI_describe.Speed_Option.option_3,
   ];
   const [FPSOption, setFPSOption] = React.useState(FPS_OPTIONS[0]);
   const [SpeedOption, setSpeedOption] = React.useState(SPEED_OPTIONS[0]);
@@ -126,21 +139,21 @@ const UserGUI_runtime = () => {
   };
 
   return (
-    <div className="UserGUI_Frame">
+    <div className="CommonGUI_Frame">
       <div className="dashboard-wrapper">
         {/* Header */}
         <header className="dashboard-header">
           <div className="header-tags">
             <span className="tag tag-green">
-              <span className="dot dot-green"></span> {UserGUI_describe.UserGUI_describe.header.Title}
+              <span className="dot dot-green"></span> {UserGUI_describe.header.Title}
             </span>
             <span className="tag tag-orange">
-              <span className="dot dot-orange"></span> {UserGUI_describe.UserGUI_describe.header.Version}
+              <span className="dot dot-orange"></span> {systemVersion ? `Version: ${systemVersion}` : "Loading version..."}
             </span> 
           </div>
-          <h1 className="dashboard-title"> {UserGUI_describe.UserGUI_describe.DashboardTitle.MainTitle} </h1>
+          <h1 className="dashboard-title"> {UserGUI_describe.DashboardTitle.MainTitle} </h1>
           <p className="dashboard-subtitle">
-            {UserGUI_describe.UserGUI_describe.DashboardTitle.SubTitle}
+            {UserGUI_describe.DashboardTitle.SubTitle}
           </p>
         </header>
 
@@ -151,29 +164,29 @@ const UserGUI_runtime = () => {
             <div className="user-profile">
               <span className="welcome-text">WELCOME!</span>
               <h2 className="user-name">{email_name}</h2>
-              <span className="user-role">Role: User</span>
+              <span className="user-role">Role: {UserGUI_describe.role}</span>
             </div>
 
             <nav className="nav-menu">
               <button className={`nav-item ${navItems === "menu_RunTime" ? "active" : ""}`}
               onClick={() => onNavItemClick("menu_RunTime")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_RunTime}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_RunTime}</span>
               </button>
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_Static")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Static}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Static}</span>
               </button>
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_Reference")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Reference}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Reference}</span>
               </button>
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_Feedback")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Feedback}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Feedback}</span>
               </button>
             </nav>
 
@@ -194,7 +207,7 @@ const UserGUI_runtime = () => {
               />
               <div className="control-settings">
               <div className="setting-row">
-                <span className="setting-label">{UserGUI_describe.UserGUI_describe.FPS_Option.Title}</span>
+                <span className="setting-label">{UserGUI_describe.FPS_Option.Title}</span>
                 <div className="setting-options">
                   {FPS_OPTIONS.map(opt => (
                     <button
@@ -208,7 +221,7 @@ const UserGUI_runtime = () => {
                 </div>
               </div>
               <div className="setting-row">
-                <span className="setting-label">{UserGUI_describe.UserGUI_describe.Speed_Option.Title}</span>
+                <span className="setting-label">{UserGUI_describe.Speed_Option.Title}</span>
                 <div className="setting-options">
                   {SPEED_OPTIONS.map(opt => (
                     <button

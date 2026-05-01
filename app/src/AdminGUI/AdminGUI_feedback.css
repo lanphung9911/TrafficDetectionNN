@@ -1,0 +1,19 @@
+.send-reply-btn {
+  width: 100%;
+  height: 38px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1e9369 0%, #14835d 100%);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.metric-green {
+  background: #1e9467;
+}
+
+.metric-blue {
+  background: #4a81f4;
+}

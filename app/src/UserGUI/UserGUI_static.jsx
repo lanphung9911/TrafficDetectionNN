@@ -4,11 +4,25 @@ import './UserGUI_static.css';
 import UserGUI_describe from "./UserGUI_describe.json";
 import { handleFolderSelect } from "./submit_handle";
 import { API_BASE_URL, LIST_FOLDER_DIR } from "../config";
+import { getSystemVersion } from "../utils/get_system_version";
+import { saveLogs } from "../utils/savelog";
 
 const UserGUI_static = () => {
   const navItems = "menu_Static";
-  const email = localStorage.getItem("userEmail");
+  const email = localStorage.getItem("loginEmail");
   const email_name = email ? email.split("@")[0] : "User";
+
+  {/* get system version from backend and display it */}
+  const [systemVersion, setSystemVersion] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const ver = await getSystemVersion();
+      if (!mounted || ver === null || ver === undefined) return;
+      setSystemVersion(ver);
+    })();
+    return () => { mounted = false; };
+  }, []);
 
   {/* items selected in navigation menu, default is "menu_Static" */}
   const navigate = useNavigate();
@@ -43,10 +57,8 @@ const UserGUI_static = () => {
   const onFolderSubmit = async (event) => {
     const files = event.target.files;
     if (!folderInputRef.current) return;
-    // console.log("Total files:", files.length);
 
     if (!files) return;
-    // console.log("File selected", files);
 
     // reset folder name
     setImages([]);
@@ -65,7 +77,6 @@ const UserGUI_static = () => {
     setcountofImgs(files.length);
 
     localStorage.setItem("folder_images", JSON.stringify(urls));
-    // console.log("Folder of images stored in localStorage:", urls);
 
     const result = await handleFolderSelect(files);
 
@@ -153,21 +164,21 @@ const UserGUI_static = () => {
   };
 
   return (
-    <div className="UserGUI_Frame">
+    <div className="CommonGUI_Frame">
       <div className="dashboard-wrapper">
         {/* Header */}
         <header className="dashboard-header">
           <div className="header-tags">
             <span className="tag tag-green">
-              <span className="dot dot-green"></span> {UserGUI_describe.UserGUI_describe.header.Title}
+              <span className="dot dot-green"></span> {UserGUI_describe.header.Title}
             </span>
             <span className="tag tag-orange">
-              <span className="dot dot-orange"></span> {UserGUI_describe.UserGUI_describe.header.Version}
+              <span className="dot dot-orange"></span> {systemVersion ? `Version: ${systemVersion}` : "Loading version..."}
             </span> 
           </div>
-          <h1 className="dashboard-title"> {UserGUI_describe.UserGUI_describe.DashboardTitle.MainTitle} </h1>
+          <h1 className="dashboard-title"> {UserGUI_describe.DashboardTitle.MainTitle} </h1>
           <p className="dashboard-subtitle">
-            {UserGUI_describe.UserGUI_describe.DashboardTitle.SubTitle}
+            {UserGUI_describe.DashboardTitle.SubTitle}
           </p>
         </header>
 
@@ -178,29 +189,29 @@ const UserGUI_static = () => {
             <div className="user-profile">
               <span className="welcome-text">WELCOME!</span>
               <h2 className="user-name">{email_name}</h2>
-              <span className="user-role">Role: User</span>
+              <span className="user-role">Role: {UserGUI_describe.role}</span>
             </div>
 
             <nav className="nav-menu">
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_RunTime")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_RunTime}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_RunTime}</span>
               </button>
               <button className={`nav-item ${navItems === "menu_Static" ? "active" : ""}`}
               onClick={() => onNavItemClick("menu_Static")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Static}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Static}</span>
               </button>
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_Reference")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Reference}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Reference}</span>
               </button>
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_Feedback")}>
                 <div className="nav-icon"></div>
-                <span>{UserGUI_describe.UserGUI_describe.Navi_Menu.menu_Feedback}</span>
+                <span>{UserGUI_describe.Navi_Menu.menu_Feedback}</span>
               </button>
             </nav>
 
@@ -224,7 +235,7 @@ const UserGUI_static = () => {
               {/* Control settings */}
               <div className="control-settings">
               <div className="setting-row">
-                <span className="setting-label">{UserGUI_describe.UserGUI_describe.Control_Panel.Title}</span>
+                <span className="setting-label">{UserGUI_describe.Control_Panel.Title}</span>
                 <div className="setting-options">
                   <button 
                     className="option-btn" 
@@ -232,7 +243,7 @@ const UserGUI_static = () => {
                     disabled={countofImgs === 0 || currentImgIndex === 0}
                     style={{ opacity: countofImgs === 0 || currentImgIndex === 0 ? 0.5 : 1, cursor: countofImgs === 0 || currentImgIndex === 0 ? 'not-allowed' : 'pointer' }}
                   >
-                    {UserGUI_describe.UserGUI_describe.Control_Panel.Previous_Image}
+                    {UserGUI_describe.Control_Panel.Previous_Image}
                   </button>
                   <button 
                     className="option-btn" 
@@ -240,10 +251,10 @@ const UserGUI_static = () => {
                     disabled={countofImgs === 0 || currentImgIndex >= countofImgs - 1}
                     style={{ opacity: countofImgs === 0 || currentImgIndex >= countofImgs - 1 ? 0.5 : 1, cursor: countofImgs === 0 || currentImgIndex >= countofImgs - 1 ? 'not-allowed' : 'pointer' }}
                   >
-                    {UserGUI_describe.UserGUI_describe.Control_Panel.Next_Image}
+                    {UserGUI_describe.Control_Panel.Next_Image}
                   </button>
                   <button className="option-btn" onClick={() => onResetClick()}>
-                    {UserGUI_describe.UserGUI_describe.Control_Panel.reset}
+                    {UserGUI_describe.Control_Panel.reset}
                   </button>
                 </div>
               </div>
@@ -262,7 +273,7 @@ const UserGUI_static = () => {
             <div className="content-row">
               {/* Camera Section */}
               <div className="card image-card">
-                <div className="camera-display">
+                <div className="image-display">
                   {images[currentImgIndex] && (
                     <img
                       src={`${API_BASE_URL}${images[currentImgIndex]}`}

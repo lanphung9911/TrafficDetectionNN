@@ -1,0 +1,295 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./DataScientistGUI_CNNarch.css";
+import DataScientistGUI_describe from "./DataScientistGUI_describe.json";
+import { saveLogs } from "../utils/savelog";
+import { getSystemVersion } from "../utils/get_system_version";
+
+const summaryCards = [
+  {
+    title: "Accuracy",
+    value: "94.3%",
+    subtitle: "Model CNN v2.1 - Test set",
+    icon: "A",
+    className: "accuracy",
+  },
+  {
+    title: "Precision",
+    value: "93.8%",
+    subtitle: "Model CNN v2.1 - Test set",
+    icon: "P",
+    className: "precision",
+  },
+  {
+    title: "Recall",
+    value: "94.1%",
+    subtitle: "Model CNN v2.1 - Test set",
+    icon: "R",
+    className: "recall",
+  },
+  {
+    title: "F1-Score",
+    value: "93.9%",
+    subtitle: "Model CNN v2.1 - Test set",
+    icon: "F",
+    className: "f1",
+  },
+];
+
+const architectureLegend = [
+  { label: "Conv2D", className: "legend-conv" },
+  { label: "MaxPool", className: "legend-pool" },
+  { label: "Dropout", className: "legend-dropout" },
+  { label: "Dense", className: "legend-dense" },
+  { label: "Output", className: "legend-output" },
+];
+
+const architectureLayers = [
+  { title: "Input", subtitle: "32×32×3", className: "layer-input" },
+  { title: "Conv2D", subtitle: "32 filters, 3×3, ReLU", className: "layer-conv" },
+  { title: "Conv2D", subtitle: "32 filters, 3×3, ReLU", className: "layer-conv" },
+  { title: "MaxPool2D", subtitle: "2×2, stride=2", className: "layer-pool" },
+  { title: "Dropout", subtitle: "rate=0.25", className: "layer-dropout" },
+  { title: "Conv2D", subtitle: "64 filters, 3×3, ReLU", className: "layer-conv" },
+  { title: "Conv2D", subtitle: "64 filters, 3×3, ReLU", className: "layer-conv" },
+  { title: "MaxPool2D", subtitle: "2×2, stride=2", className: "layer-pool" },
+  { title: "Dropout", subtitle: "rate=0.25", className: "layer-dropout" },
+  { title: "Dense", subtitle: "128 units, ReLU", className: "layer-dense" },
+  { title: "Dense", subtitle: "64 units, ReLU", className: "layer-dense" },
+  { title: "Output", subtitle: "43 classes, Softmax", className: "layer-output" },
+];
+
+const hyperparameters = [
+  ["Learning Rate", "0.001"],
+  ["Batch Size", "32"],
+  ["Epochs", "50"],
+  ["Optimizer", "Adam"],
+  ["Loss Function", "Categorical CE"],
+  ["Input Shape", "32×32×3"],
+];
+
+const augmentation = [
+  ["Rotation", "+15°"],
+  ["Width Shift", "10%"],
+  ["Height Shift", "10%"],
+  ["Zoom Range", "20%"],
+  ["Horizontal Flip", "False"],
+  ["Preprocessing", "Normalize /255"],
+];
+
+const statistics = [
+  ["Total Parameters", "2.3M"],
+  ["Trainable Params", "2.3M"],
+  ["Model Size", "8.9 MB"],
+  ["Conv Layers", "4"],
+  ["Dense Layers", "2"],
+  ["Training Time", "~22 phút"],
+];
+
+const actionButtons = [
+  { label: "Start Training", className: "primary" },
+  { label: "Upload Dataset", className: "secondary" },
+  { label: "Export Model (.h5)", className: "ghost" },
+  { label: "Show on GitHub", className: "ghost" },
+];
+
+const DataScientistGUI_CNNarch = () => {
+  const navItems = "menu_CNNarch";
+  const email = localStorage.getItem("loginEmail");
+  const email_name = email ? email.split("@")[0] : "Data Scientist";
+
+  {/* get system version from backend and display it */}
+  const [systemVersion, setSystemVersion] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const ver = await getSystemVersion();
+      if (!mounted || ver === null || ver === undefined) return;
+      setSystemVersion(ver);
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  {/* items selected in navigation menu, default is "menu_Archive" */}
+  const navigate = useNavigate();
+  const onNavItemClick = (item) => {
+    if (item === "menu_History") {
+      navigate("/DataScientistGUI_history", "_blank");
+    } else if (item === "menu_Evaluation") {
+      navigate("/DataScientistGUI_evaluation", "_blank");
+    } else if (item === "menu_CNNarch") {
+      /* Do nothing */
+    } else if (item === "menu_Dataset") {
+      navigate("/DataScientistGUI_dataset", "_blank");
+    } else {
+      /* Do nothing */
+    }
+  };
+
+  return (
+    <div className="CommonGUI_Frame">
+      <div className="dashboard-wrapper">
+        <header className="dashboard-header">
+          <div className="header-tags">
+            <span className="tag tag-green">
+              <span className="dot dot-green"></span> {DataScientistGUI_describe.header.Title}
+            </span>
+            <span className="tag tag-orange">
+              <span className="dot dot-orange"></span>{" "}
+              {systemVersion ? `Version: ${systemVersion}` : "Loading version..."}
+            </span>
+          </div>
+          <h1 className="dashboard-title">{DataScientistGUI_describe.DashboardTitle.MainTitle}</h1>
+          <p className="dashboard-subtitle">{DataScientistGUI_describe.DashboardTitle.SubTitle}</p>
+        </header>
+
+        <div className="dashboard-main">
+          <aside className="sidebar">
+            <div className="user-profile">
+              <span className="welcome-text">WELCOME!</span>
+              <h2 className="user-name">{email_name}</h2>
+              <span className="user-role">{DataScientistGUI_describe.role}</span>
+            </div>
+
+            <nav className="nav-menu">
+              <button className="nav-item" onClick={() => onNavItemClick("menu_History")}>
+                <div className="nav-icon"></div>
+                <span>{DataScientistGUI_describe.Navi_Menu.menu_History}</span>
+              </button>
+              <button className="nav-item" onClick={() => onNavItemClick("menu_Evaluation")}>
+                <div className="nav-icon"></div>
+                <span>{DataScientistGUI_describe.Navi_Menu.menu_Evaluation}</span>
+              </button>
+              <button className={`nav-item ${navItems === "menu_CNNarch" ? "active" : ""}`}>
+                <div className="nav-icon"></div>
+                <span>{DataScientistGUI_describe.Navi_Menu.menu_CNNarch}</span>
+              </button>
+              <button className="nav-item" onClick={() => onNavItemClick("menu_Dataset")}>
+                <div className="nav-icon"></div>
+                <span>{DataScientistGUI_describe.Navi_Menu.menu_Dataset}</span>
+              </button>
+            </nav>
+          </aside>
+
+          <div className="ds-area history-dashboard">
+            <div className="ds-dashboard">
+              <section className="model-top-metrics">
+                {summaryCards.map((card) => (
+                  <article key={card.title} className={`model-metric-card ${card.className}`}>
+                    <h2 className="model-metric-title">{card.title}</h2>
+                    <p className="model-metric-value">{card.value}</p>
+                    <p className="model-metric-subtitle">{card.subtitle}</p>
+                    <span className="model-metric-icon" aria-hidden="true">
+                      {card.icon}
+                    </span>
+                  </article>
+                ))}
+              </section>
+
+              <section className="ds-panel">
+                <div className="ds-panel-shell">
+                  <div className="cnn-panel-head">
+                    <h2 className="cnn-panel-title">CNN architecture</h2>
+                    <div className="cnn-legend">
+                      {architectureLegend.map((item) => (
+                        <span key={item.label} className={`cnn-legend-pill ${item.className}`}>
+                          {item.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="cnn-architecture-scroll">
+                    <div className="cnn-architecture-track">
+                      {architectureLayers.map((layer, index) => (
+                        <React.Fragment key={`${layer.title}-${index}`}>
+                          <article className={`cnn-layer-card ${layer.className}`}>
+                            <strong>{layer.title}</strong>
+                            <span>{layer.subtitle}</span>
+                          </article>
+                          {index < architectureLayers.length - 1 && (
+                            <div className="cnn-layer-arrow" aria-hidden="true">
+                              ›
+                            </div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    <div className="cnn-scrollbar" aria-hidden="true">
+                      <span />
+                    </div>
+                  </div>
+
+                  <div className="cnn-info-grid">
+                    <article className="cnn-info-card">
+                      <div className="cnn-info-card-title">Hyperparameters</div>
+                      <div className="cnn-spec-list">
+                        {hyperparameters.map(([label, value]) => (
+                          <div key={label} className="cnn-spec-row">
+                            <span>{label}</span>
+                            <strong>{value}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+
+                    <article className="cnn-info-card">
+                      <div className="cnn-info-card-title">Data Augmentation</div>
+                      <div className="cnn-spec-list">
+                        {augmentation.map(([label, value]) => (
+                          <div key={label} className="cnn-spec-row">
+                            <span>{label}</span>
+                            <strong>{value}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+
+                    <article className="cnn-info-card">
+                      <div className="cnn-info-card-title">Model Statistic</div>
+                      <div className="cnn-spec-list">
+                        {statistics.map(([label, value]) => (
+                          <div key={label} className="cnn-spec-row">
+                            <span>{label}</span>
+                            <strong>{value}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  </div>
+
+                  <div className="cnn-actions">
+                    {actionButtons.map((button) => (
+                      <button key={button.label} type="button" className={`cnn-action-btn ${button.className}`}>
+                        {button.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              <footer className="ds-footer">
+                <div className="ds-footer-title">
+                  <strong>Model CNN v2.2 Training...</strong>
+                  <span>Epoch 45/50 - Val Acc: 93.4% - ETA: ~3 min</span>
+                </div>
+
+                <div className="ds-progress-block">
+                  <div className="ds-progress-copy">
+                    <span>Progress: 90%</span>
+                  </div>
+                  <div className="ds-progress-track" aria-hidden="true">
+                    <div className="ds-progress-fill" />
+                  </div>
+                  <div className="ds-progress-eta">~3 min remaining</div>
+                </div>
+              </footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DataScientistGUI_CNNarch;
