@@ -1,0 +1,95 @@
+from datetime import datetime
+import json
+import os
+from fastapi import APIRouter, HTTPException
+from ..schemas import FeedbackRequest
+from .write2json import write_to_json, overwrite_to_json
+from ..config import FEEDBACK_DIR
+
+get_user_feedback_router = APIRouter()
+
+@get_user_feedback_router.post("/api/user/feedback")
+def submit_feedback(request: FeedbackRequest):
+    os.makedirs(FEEDBACK_DIR, exist_ok=True)
+    file_path = os.path.join(FEEDBACK_DIR, f"{request.email_name}.json")
+
+    now = datetime.now()
+    record = {
+        "email_name": request.email_name,
+        "rating": request.rating,
+        "evaluateOption": request.evaluateOption,
+        "attachFile": request.attachFile,
+        "feedbackText": request.feedbackText,
+        "status": "Pending",
+        "date": now.strftime("%Y-%m-%d"),
+        "time": now.strftime("%H:%M:%S"),
+        "timestamp": now.isoformat(),
+        "reply": None
+    }
+
+    # temporary solution: write each feedback to a separate file named by email_name, in the feedback folder
+    write_to_json(record, file_path)
+
+    return {"status": "ok", "saved_to": file_path}
+
+@get_user_feedback_router.get("/api/user/feedback/{email_name}")
+def get_user_feedback(email_name: str):
+    file_path = os.path.join(FEEDBACK_DIR, f"{email_name}.json")
+    if not os.path.exists(file_path):
+        return []
+    with open(file_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@get_user_feedback_router.get("/api/admin/feedback")
+def get_all_feedback():
+    if not os.path.exists(FEEDBACK_DIR):
+        return []
+    all_items = []
+    for fname in os.listdir(FEEDBACK_DIR):
+        if fname.endswith(".json"):
+            with open(os.path.join(FEEDBACK_DIR, fname), "r", encoding="utf-8") as f:
+                all_items.extend(json.load(f))
+    return all_items
+
+@get_user_feedback_router.post("/api/admin/reply")
+def admin_reply(payload: dict):
+    admin_email = payload.get("admin_email")
+    user_email = payload.get("user_email")
+    reply = payload.get("replyText")
+    timestamp = payload.get("timestamp")
+    status = payload.get("status")
+
+    if not user_email or not reply:
+        raise HTTPException(status_code=400, detail="Missing fields")
+
+    user_file = os.path.join(FEEDBACK_DIR, f"{user_email}.json")
+    if not os.path.exists(user_file):
+        raise HTTPException(status_code=404, detail="User feedback file not found")
+
+    try:
+        with open(user_file, "r", encoding="utf-8") as f:
+            records = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        raise HTTPException(status_code=500, detail="Failed to read user feedback file")
+
+    # locate the matching feedback record
+    matched = None
+    for rec in records:
+        if timestamp and rec.get("timestamp") == timestamp:
+            rec["reply"] = reply
+            rec["admin_email"] = admin_email
+            rec["reply_timestamp"] = datetime.now().isoformat()
+            rec["status"] = status
+            matched = rec
+            break
+
+    if matched is None:
+        raise HTTPException(status_code=404, detail="Feedback record not found")
+
+    # write back the full list to the same user file
+    try:
+        overwrite_to_json(records, user_file)
+    except OSError:
+        raise HTTPException(status_code=500, detail="Failed to write reply to file")
+
+    return {"status": "ok", "saved_to": user_file}

@@ -1,19 +1,15 @@
 from fastapi import APIRouter, UploadFile, File, Request, Form
-from ..config import OUTPUT_DIR, UPLOAD_DIR, INPUT_FILE_PATH
+from ..config import UPLOAD_DIR, INPUT_FILE_PATH
 from .write2json import write_to_json
 import os
 
-# create a router for video handling routes
-vdHandle_router = APIRouter()
+# create a router for input handling routes
+inputSrcHandle_router = APIRouter()
 
 ############################### api/video/upload ###############################
 # create a route for video upload as POST (receives from frontend)
-@vdHandle_router.post("/upload_video")
-
-# define function to handle video upload requests
+@inputSrcHandle_router.post("/upload_video")
 async def upload_video(request: Request, file: UploadFile = File(...)):
-    # create output file to store log
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # create upload folder to store uploaded video files from frontend
     os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -36,9 +32,7 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
 
 ############################# api/video/set_option #############################
 # create a route for video upload as POST (receives from frontend)
-@vdHandle_router.post("/set_option")
-
-# define function to handle video upload requests
+@inputSrcHandle_router.post("/set_option")
 async def set_option_video(requestOption: Request):
     data = await requestOption.json()
 
@@ -54,9 +48,7 @@ async def set_option_video(requestOption: Request):
 
 ########################### api/video/upload_folder ############################
 # create a route for video upload as POST (receives from frontend)
-@vdHandle_router.post("/upload_folder")
-
-# define function to handle video upload requests
+@inputSrcHandle_router.post("/upload_folder")
 async def upload_folder(
     files: list[UploadFile] = File(...),
     paths: list[str] = Form(...)

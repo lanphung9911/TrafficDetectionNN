@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from . import config
-from .routes import auth, inputhandle, predict_data_vid, predict_data_img, ref_data, get_feedback
+from .routes import auth, inputhandle, predict_data_vid, predict_data_img, ref_data, get_feedback, logs_record, logs_analysis, get_version
 from fastapi.responses import JSONResponse
 
 # create a backend server using FastAPI
@@ -13,7 +13,8 @@ app = FastAPI(title="TrafficDetect Backend (demo)")
 # configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=config.FRONTEND_URLS,
+    # allow_origins=config.FRONTEND_URLS, #allow specific origins from config
+    allow_origins=["*"], #allow all origins for development, can be restricted if needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -23,25 +24,29 @@ app.add_middleware(
 
 ## auth routes with prefix from config
 app.include_router(auth.login_router, prefix=config.PRE_FIX_AUTH)
-app.include_router(inputhandle.vdHandle_router, prefix=config.PRE_FIX_VIDEO)
+app.include_router(inputhandle.inputSrcHandle_router, prefix=config.PRE_FIX_VIDEO)
 app.include_router(predict_data_vid.predict_vid_router)
 app.include_router(predict_data_img.predict_img_router)
 app.include_router(ref_data.ref_data_router)
 app.include_router(get_feedback.get_user_feedback_router)
+app.include_router(logs_record.logs_system_router)
+app.include_router(logs_analysis.logs_analysis_router)
+app.include_router(get_version.get_version_router)
 
 # create upload folder to store uploaded video files from frontend
 os.makedirs(config.UPLOAD_DIR, exist_ok=True)
 os.makedirs(config.OUTPUT_DIR, exist_ok=True)
 os.makedirs(config.REFDATA_DIR, exist_ok=True)
+os.makedirs(config.ANALYSISLOGS_DIR, exist_ok=True)
 app.mount(f"{config.UPLOAD_DIR}".replace(".", ""), StaticFiles(directory=config.UPLOAD_DIR), name="upload")
-app.mount(f"{config.OUTPUT_DIR}".replace(".", ""), StaticFiles(directory=config.OUTPUT_DIR), name="output")
+app.mount(f"{config.OUTPUT_DIR}".replace(".", ""), StaticFiles(directory=config.OUTPUT_DIR), name="output_logs")
+app.mount(f"{config.ANALYSISLOGS_DIR}".replace(".", ""), StaticFiles(directory=config.ANALYSISLOGS_DIR), name="analysis_logs")
 app.mount("/reference", StaticFiles(directory=config.REFDATA_DIR), name="reference")
 
 # define a route for the home page
 @app.get("/")
 def home():
-    print("LAN")
-    return {"message": "Hello LAN"}
+    return {"message": "Welcome"}
 
 @app.get(f"{config.LIST_FOLDER_DIR}/{{folder_path:path}}")
 async def list_files(folder_path: str):
