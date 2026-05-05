@@ -239,10 +239,10 @@ const AdminGUI_monitoring = () => {
                         <div className="user-role-cell">{user.role ?? "--"}</div>
                         <div className="user-permission-cell">{user.permission ?? "--"}</div>
                         <button className="monitor-ghost-btn"
-                          onClick={() => handleDeleteUser(user.email)}> Delete
+                          onClick={() => handleDeleteUser(user.email.split("@")[0])}> Delete
                         </button>
                         <button className="monitor-ghost-btn"
-                          onClick={() => handleAnalyzeLog(user.email)}> Logs
+                          onClick={() => handleAnalyzeLog(user.email.split("@")[0])}> Logs
                         </button>
                       </div>
                     ))}

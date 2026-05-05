@@ -46,10 +46,19 @@ def get_all_feedback():
         return []
     all_items = []
     for fname in os.listdir(FEEDBACK_DIR):
-        if fname.endswith(".json"):
-            with open(os.path.join(FEEDBACK_DIR, fname), "r", encoding="utf-8") as f:
-                all_items.extend(json.load(f))
-    return all_items
+        if not fname.endswith(".json"):
+            continue
+        path = os.path.join(FEEDBACK_DIR, fname)
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                items = json.load(f)
+                if isinstance(items, list):
+                    all_items.extend(items)
+                else:
+                    all_items.append(items)
+        except (json.JSONDecodeError, OSError):
+            # skip invalid/empty files
+            continue
 
 @get_user_feedback_router.post("/api/admin/reply")
 def admin_reply(payload: dict):

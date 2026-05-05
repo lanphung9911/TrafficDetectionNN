@@ -9,7 +9,7 @@ PORT = int(os.getenv("PORT", 8000))
 SYSTEM_VERSION = os.getenv("SYSTEM_VERSION", "0_0")
 JWT_SECRET = os.getenv("MY_SECRET", "dev-secret")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-FRONTEND_URL = os.getenv("REACT_APP_API_URL", "http://localhost:5174")
+FRONTEND_URL = os.getenv("REACT_APP_API_URL", "http://localhost:5173")
 PRE_FIX_AUTH = os.getenv("PRE_FIX_AUTH", "/api/auth")
 PRE_FIX_VIDEO = os.getenv("PRE_FIX_VIDEO", "/api/video")
 PRE_FIX_USER = os.getenv("PRE_FIX_USER", "/api/user")
@@ -21,7 +21,7 @@ FEEDBACK_DIR = os.getenv("FEEDBACK_DIR", "feedback")
 AUTH_USER_DIR = os.getenv("AUTH_USER_DIR", "auth_login")
 INPUT_USER_DIR = os.getenv("INPUT_USER_DIR", "input_users")
 ANALYSISLOGS_DIR = os.getenv("ANALYSISLOGS_DIR", "analysis_logs")
-FRONTEND_URLS = [u.strip() for u in os.getenv("FRONTEND_URLS", "http://localhost:5174").split(",") if u.strip()]
+FRONTEND_URLS = [u.strip() for u in os.getenv("FRONTEND_URLS", "http://localhost:5173").split(",") if u.strip()]
 
 # define file paths
 AUTH_FILE_PATH = os.path.join(AUTH_USER_DIR, "data.json")

@@ -1,11 +1,14 @@
 import json
+import os
 from fastapi import APIRouter, HTTPException
 from ..schemas import LoginRequest
 from .write2json import write_to_json
-from ..config import AUTH_FILE_PATH
+from ..config import AUTH_FILE_PATH, FEEDBACK_DIR, OUTPUT_DIR
 from pathlib import Path
 
 authpath = Path(AUTH_FILE_PATH)
+feedbackpath = Path(FEEDBACK_DIR)
+outputpath = Path(OUTPUT_DIR)
 
 # create a router for authentication routes
 login_router = APIRouter()
@@ -25,6 +28,14 @@ def login(request: LoginRequest):
         "role": request.role,
         "permission": set_permission}
     
+    # auto create user package in backend
+    feedback_user_file = feedbackpath / (request.email.split("@")[0] + ".json")
+    with open(feedback_user_file, "a", encoding="utf-8") as f:
+        pass
+    output_user_file = outputpath / (request.email.split("@")[0] + ".json")
+    with open(output_user_file, "a", encoding="utf-8") as f:
+        pass
+
     try:
         write_to_json(result, AUTH_FILE_PATH)
     except Exception:
@@ -57,7 +68,7 @@ def delete_user_from_auth_file(email: str) -> bool:
                     data = []
             except json.JSONDecodeError:
                 data = []
-        new_data = [u for u in data if u.get("email") != email]
+        new_data = [u for u in data if u.get("email").split("@")[0] != email]
         if len(new_data) == len(data):
             return False
         with authpath.open("w", encoding="utf-8") as f:
@@ -68,7 +79,15 @@ def delete_user_from_auth_file(email: str) -> bool:
 
 @login_router.delete("/userinfo/{email}")
 def delete_user(email: str):
-    ok = delete_user_from_auth_file(email)
+    ok = delete_user_from_auth_file(email.split("@")[0])
     if not ok:
         raise HTTPException(status_code=404, detail="User not found")
+    else:
+        feedback_user_file = feedbackpath / (email.split("@")[0] + ".json")
+        if feedback_user_file.exists():
+            os.remove(feedback_user_file)
+        output_user_file = outputpath / (email.split("@")[0] + ".json")
+        if output_user_file.exists():
+            os.remove(output_user_file)
+
     return {"detail": "deleted"}
