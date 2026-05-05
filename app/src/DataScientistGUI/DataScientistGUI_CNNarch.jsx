@@ -2,39 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DataScientistGUI_CNNarch.css";
 import DataScientistGUI_describe from "./DataScientistGUI_describe.json";
+import evaluationData from "./MatrixScore.json";
 import { saveLogs } from "../utils/savelog";
 import { getSystemVersion } from "../utils/get_system_version";
 
-const summaryCards = [
-  {
-    title: "Accuracy",
-    value: "94.3%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "A",
-    className: "accuracy",
-  },
-  {
-    title: "Precision",
-    value: "93.8%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "P",
-    className: "precision",
-  },
-  {
-    title: "Recall",
-    value: "94.1%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "R",
-    className: "recall",
-  },
-  {
-    title: "F1-Score",
-    value: "93.9%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "F",
-    className: "f1",
-  },
-];
+const summaryCards = evaluationData.summaryCards;
 
 const architectureLegend = [
   { label: "Conv2D", className: "legend-conv" },
