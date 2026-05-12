@@ -1,7 +1,7 @@
 SYSTEM_VERSION=0
 MY_SECRET=change_this_secret
 PORT=8000
-REACT_APP_API_URL=http://localhost:5174
+REACT_APP_API_URL=http://localhost:5173
 PRE_FIX_AUTH=/api/auth
 PRE_FIX_VIDEO=/api/video
 PRE_FIX_USER=/api/user

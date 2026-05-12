@@ -7,17 +7,26 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import *
 from PIL import ImageTk, Image
-import keras
-from keras.models import load_model
+import numpy as np
+import torch
+import torchvision.transforms as transforms
+import cv2
 
 # create a router for input handling routes
 inputSrcHandle_router = APIRouter()
-def DenseCompat(*args, **kwargs):
-    kwargs.pop('quantization_config', None)
-    return keras.layers.Dense(*args, **kwargs)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # `compile=False` is best for inference-only GUI usage.
-model = load_model('C:/Users/TDA5HC/Desktop/Documents/01_CS_Master/07_MachineLearning/BTL/git/TrafficDetectionNN/backend/model/CNN_V1/best_parkinson_model.h5', custom_objects={'Dense': DenseCompat}, compile=False)
+# try:
+# Use absolute path based on script location
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_model_path = os.path.join(_script_dir, '..', '..', 'model', 'CNN_V2', 'traffic_sign_recognition.pt')
+model = torch.load(_model_path, map_location=device, weights_only=False)
+model.eval()
+# except Exception as e:
+#     print(f"Lỗi load model: {e}")
+#     print("Mẹo: Đảm bảo class của model đã được định nghĩa hoặc import trước khi torch.load nếu bạn lưu bằng state_dict.")
+
 classes = { 1:'Speed limit (20km/h)',
             2:'Speed limit (30km/h)', 
             3:'Speed limit (50km/h)', 
@@ -62,51 +71,44 @@ classes = { 1:'Speed limit (20km/h)',
             42:'End of no passing', 
             43:'End no passing veh > 3.5 tons' }
 def classify(file_path):
-    global label_packed
-    input_shape = model.input_shape
-    if isinstance(input_shape, list):
-        input_shape = input_shape[0]
+    try:
+        # 1. Đọc ảnh bằng PIL và chuyển sang RGB (đảm bảo luôn là 3 kênh)
+        pil_image = Image.open(file_path).convert('RGB')
+        
+        # 2. Chuyển PIL Image thành Tensor (tương đương tv.transforms.ToTensor())
+        # Bước này chuyển ảnh về tensor có shape [3, H, W] và chuẩn hóa pixel về [0, 1]
+        img_tensor = transforms.ToTensor()(pil_image)
+        
+        # 3. Chuyển sang NumPy, đổi trục về [H, W, 3] để resize bằng OpenCV
+        img_np = img_tensor.permute(1, 2, 0).numpy()
+        img_resized = cv2.resize(img_np, (32, 32))
+        
+        # 4. Chuyển ngược lại PyTorch Tensor và đưa về dạng [3, 32, 32]
+        img_final = torch.from_numpy(img_resized).permute(2, 0, 1)
+        
+        # 5. Thêm batch dimension [1, 3, 32, 32] và đẩy lên GPU/CPU
+        image_batch = img_final.unsqueeze(0).to(device)
 
-    target_h, target_w, target_c = 30, 30, 3
-    channels_last = True
-    if isinstance(input_shape, tuple) and len(input_shape) == 4:
-        if input_shape[-1] in (1, 3):
-            target_h, target_w, target_c = input_shape[1], input_shape[2], input_shape[3]
-            channels_last = True
-        elif input_shape[1] in (1, 3):
-            target_c, target_h, target_w = input_shape[1], input_shape[2], input_shape[3]
-            channels_last = False
+        # 6. Dự đoán nhãn bằng PyTorch model
+        with torch.no_grad():
+            outputs = model(image_batch)
+            pred = int(outputs.argmax(axis=1)[0])
 
-    if target_h is None or target_w is None:
-        target_h, target_w = 30, 30
-    if target_c is None:
-        target_c = 3
-
-    pil_image = Image.open(file_path)
-    pil_image = pil_image.convert('L' if int(target_c) == 1 else 'RGB')
-    pil_image = pil_image.resize((int(target_w), int(target_h)))
-
-    image = numpy.asarray(pil_image, dtype=numpy.float32)
-    if int(target_c) == 1 and image.ndim == 2:
-        image = numpy.expand_dims(image, axis=-1)
-    if image.max() > 1.0:
-        image = image / 255.0
-    if not channels_last:
-        image = numpy.transpose(image, (2, 0, 1))
-
-    image_batch = numpy.expand_dims(image, axis=0)
-    probs = model.predict(image_batch, verbose=0)
-    if probs.ndim == 2:
-        pred = int(numpy.argmax(probs, axis=-1)[0])
-    else:
-        pred = int((probs.reshape(-1)[0]) >= 0.5)
-
-    if probs.ndim == 2 and probs.shape[-1] == len(classes):
-        sign = classes[pred + 1]
-    else:
-        sign = f"Predicted class index: {pred}"
-    print("Predictation",pred)
-    print(sign)
+        # 7. Ánh xạ kết quả sang nhãn (1-indexed theo dictionary `classes` của bạn)
+        # Lưu ý: Nếu classId trong model của bạn bắt đầu từ 0, ta cộng 1 để khớp với `classes` (1-indexed)
+        class_index = pred + 1 
+        
+        if class_index in classes:
+            sign = classes[class_index]
+        else:
+            sign = f"Predicted class index (raw): {pred}"
+            
+        print(f"Recognized Traffic Sign: {sign}")
+        #label.configure(foreground='#011638', text=sign)
+        
+    except Exception as e:
+        print(f"Lỗi khi classify: {e}")
+        #label.configure(foreground='red', text="Error classifying image")
 ############################### api/video/upload ###############################
 # create a route for video upload as POST (receives from frontend)
 @inputSrcHandle_router.post("/upload_video")
@@ -173,7 +175,7 @@ async def upload_folder(
   write_to_json({"folder_filepath": filepaths}, INPUT_FILE_PATH)
 
 
-  classify("./upload/0/"+"/00000_00000.jpg")
+  classify("C:/Users/TDA5HC/Desktop/Documents/01_CS_Master/07_MachineLearning/BTL/archive/input/traffic-signs-classification/myData/1/00000_00000.jpg")
 
 
   return {

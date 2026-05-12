@@ -1,0 +1,104 @@
+[
+    {
+        "email": "ngocdat@email.com",
+        "password": "bichlan",
+        "role": "User",
+        "permission": "read-only"
+    },
+    {
+        "email": "bichlan_admin@email.com",
+        "password": "ngocdat",
+        "role": "Admin",
+        "permission": "full-access"
+    },
+    {
+        "email": "ngocdat_admin_2@email.com",
+        "password": "bichlan",
+        "role": "Admin",
+        "permission": "full-access"
+    },
+    {
+        "email": "ngocdat_ds@email.com",
+        "password": "bichlan",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "bichlan_user@email.com",
+        "password": "ngocdat",
+        "role": "User",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "User",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "User",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "User",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "User",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "User",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    }
+]

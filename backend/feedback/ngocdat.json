@@ -1,0 +1,16 @@
+[
+    {
+        "email_name": "ngocdat",
+        "rating": 4,
+        "evaluateOption": "WRONG DETECTION",
+        "attachFile": null,
+        "feedbackText": "ngocdat feedback 1",
+        "status": "close",
+        "date": "2026-05-04",
+        "time": "22:38:02",
+        "timestamp": "2026-05-04T22:38:02.276748",
+        "reply": "khong biet",
+        "admin_email": "bichlan_admin@email.com",
+        "reply_timestamp": "2026-05-04T22:39:16.381206"
+    }
+]
