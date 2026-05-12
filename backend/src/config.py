@@ -24,7 +24,9 @@ ANALYSISLOGS_DIR = os.getenv("ANALYSISLOGS_DIR", "analysis_logs")
 FRONTEND_URLS = [u.strip() for u in os.getenv("FRONTEND_URLS", "http://localhost:5173").split(",") if u.strip()]
 
 # define file paths
+VERSION_FILE_PATH = os.path.join(ANALYSISLOGS_DIR, f"{SYSTEM_VERSION}.json")
 AUTH_FILE_PATH = os.path.join(AUTH_USER_DIR, "data.json")
 INPUT_FILE_PATH = os.path.join(INPUT_USER_DIR, "input.json")
 DATAREF_FILE_PATH_CSV = os.path.join(REFDATA_DIR, "ref_data.csv")
 DATAREF_FILE_PATH_JSON = os.path.join(REFDATA_DIR, "ref_data.json")
+ATTACHMENT_FEEDBACK_FILE_PATH_JSON = os.path.join(FEEDBACK_DIR, "attachment_feedback.json")

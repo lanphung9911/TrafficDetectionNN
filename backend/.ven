@@ -1,4 +1,4 @@
-SYSTEM_VERSION=0
+SYSTEM_VERSION=1
 MY_SECRET=change_this_secret
 PORT=8000
 REACT_APP_API_URL=http://localhost:5173
@@ -8,6 +8,7 @@ PRE_FIX_USER=/api/user
 OUTPUT_DIR=./output_logs
 UPLOAD_DIR=./upload
 REFDATA_DIR=./reference
+FEEDBACK_DIR=./feedback
 ANALYSISLOGS_DIR=./analysis_logs
 LIST_FOLDER_DIR=/list-files
 AUTH_DIR=./auth_login
