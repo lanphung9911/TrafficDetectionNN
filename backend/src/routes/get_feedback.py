@@ -37,8 +37,13 @@ def get_user_feedback(email_name: str):
     file_path = os.path.join(FEEDBACK_DIR, f"{email_name}.json")
     if not os.path.exists(file_path):
         return []
-    with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            items = json.load(f) if os.path.getsize(file_path) > 0 else []
+    except (json.JSONDecodeError, OSError):
+        # skip invalid/empty files
+        return []
+    return items
 
 @get_user_feedback_router.get("/api/admin/feedback")
 def get_all_feedback():
