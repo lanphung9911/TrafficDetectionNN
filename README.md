@@ -20,7 +20,12 @@ Default of backend server: http://localhost:5173
 2. Activate virtual python
     run bat file in \.venv\Scripts\activate.bat
 3. Install necessary library
-    (cmd) pip install fastapi uvicorn python-dotenv pydantic
+    (cmd) pip install -r backend/requirements.txt
+
+    Note: backend/requirements.txt includes:
+      fastapi, uvicorn[standard], python-dotenv, pydantic,
+      python-multipart (required for file upload endpoints),
+      websockets (required for WebSocket endpoints in predict_data_*)
 
 ### Set up node module in frontend
 (cmd) cd app

@@ -22,7 +22,20 @@ export async function handleLogin({ email, password, role }) {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data.detail || data.message || "Login failed");
+    /* FastAPI 422 returns detail as an array of {msg, loc, type, ...}.
+       For 4xx/5xx with HTTPException, detail is a string. Normalize both. */
+    let message = "Login failed";
+    if (Array.isArray(data.detail)) {
+      message = data.detail
+        .map((e) => (e && typeof e.msg === "string" ? e.msg : null))
+        .filter(Boolean)
+        .join(" ") || message;
+    } else if (typeof data.detail === "string") {
+      message = data.detail;
+    } else if (typeof data.message === "string") {
+      message = data.message;
+    }
+    throw new Error(message);
   }
 
   return data;
