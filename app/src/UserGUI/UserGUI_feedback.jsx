@@ -58,6 +58,16 @@ const UserGUI_feedback = () => {
   const [feedbackText, setFeedbackText] = useState("");
   const fileInputRef = React.useRef(null);
 
+  const onAttachmentClick = () => {
+    fileInputRef.current.click();
+  }
+
+  const onAttachmentChange = () => {
+    const file = fileInputRef.current.files[0] || null;
+    if (!fileInputRef.current) return; // safety check, user did not select a file and closed the dialog
+    setAttachFile(file); // set attached file to display in UI
+  }
+
   const onFeedbackSubmit = async () => {
     try {
       const result = await handleFeedback({
@@ -272,18 +282,19 @@ const UserGUI_feedback = () => {
                   <div className="fb-row-inline fb-spread">
                     <span className="fb-label">Attachment</span>
                     <div className="fb-row-inline">
-                      <button className="fb-btn fb-btn-browse" onClick={() => fileInputRef.current.click()}>
-                        BROWSE
+                      <button className="fb-btn fb-btn-browse"
+                      onClick={onAttachmentClick}>
+                      <span>BROWSE</span>
                       </button>
-                      <span className="fb-filename">{attachFile ? attachFile.name : ""}</span>
+                      <span className="fb-filename">{attachFile ? attachFile.name : "No attachment from user. Attachment allowed for images only."}</span>
                     </div>
                   </div>
                   <input
                     type="file"
-                    accept="image/*,video/*"
+                    accept="image/*"
                     style={{ display: "none" }}
                     ref={fileInputRef}
-                    onChange={(e) => setAttachFile(e.target.files[0] || null)}
+                    onChange={onAttachmentChange}
                   />
                 </div>
 

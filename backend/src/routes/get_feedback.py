@@ -1,25 +1,30 @@
 from datetime import datetime
 import json
 import os
-from fastapi import APIRouter, HTTPException
-from ..schemas import FeedbackRequest
-from .write2json import write_to_json, overwrite_to_json
-from ..config import FEEDBACK_DIR
+from fastapi import APIRouter, Form, HTTPException, UploadFile, File
+from ..helper import writefile
+from ..config import FEEDBACK_DIR, ATTACHMENT_FEEDBACK_FILE_PATH_JSON, FEEDBACK_ATTACHMENT_DIR
 
 get_user_feedback_router = APIRouter()
 
 @get_user_feedback_router.post("/api/user/feedback")
-def submit_feedback(request: FeedbackRequest):
+def submit_feedback(
+    email_name: str = Form(...),
+    rating: int = Form(...),
+    evaluateOption: str = Form(...),
+    feedbackText: str = Form(...),
+    attachFile: UploadFile = File(None)
+):
     os.makedirs(FEEDBACK_DIR, exist_ok=True)
-    file_path = os.path.join(FEEDBACK_DIR, f"{request.email_name}.json")
+    file_path = os.path.join(FEEDBACK_DIR, f"{email_name}.json")
 
     now = datetime.now()
     record = {
-        "email_name": request.email_name,
-        "rating": request.rating,
-        "evaluateOption": request.evaluateOption,
-        "attachFile": request.attachFile,
-        "feedbackText": request.feedbackText,
+        "email_name": email_name,
+        "rating": rating,
+        "evaluateOption": evaluateOption,
+        "attachFile": attachFile.filename if attachFile else None,
+        "feedbackText": feedbackText,
         "status": "Pending",
         "date": now.strftime("%Y-%m-%d"),
         "time": now.strftime("%H:%M:%S"),
@@ -28,7 +33,19 @@ def submit_feedback(request: FeedbackRequest):
     }
 
     # temporary solution: write each feedback to a separate file named by email_name, in the feedback folder
-    write_to_json(record, file_path)
+    writefile.append_to_json(record, ATTACHMENT_FEEDBACK_FILE_PATH_JSON)
+
+    # save attach file to folder
+    if attachFile:
+        try:
+            os.makedirs(FEEDBACK_ATTACHMENT_DIR, exist_ok=True)
+            file_name_prefix = os.path.split(attachFile.filename)[-1].split(".")[0]
+            file_extension = os.path.split(attachFile.filename)[-1].split(".")[-1]
+            attach_path = os.path.join(FEEDBACK_ATTACHMENT_DIR, f"{file_name_prefix}.{file_extension}".replace("\\", "/"))
+            with open(attach_path, "wb") as f:
+                f.write(attachFile.file.read())
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to save attachment: {str(e)}")
 
     return {"status": "ok", "saved_to": file_path}
 
@@ -103,7 +120,7 @@ def admin_reply(payload: dict):
 
     # write back the full list to the same user file
     try:
-        overwrite_to_json(records, user_file)
+        writefile.overwrite_to_json(records, user_file)
     except OSError:
         raise HTTPException(status_code=500, detail="Failed to write reply to file")
 

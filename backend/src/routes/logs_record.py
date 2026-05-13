@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, HTTPException
 import re, os
 from ..config import OUTPUT_DIR
-from .write2json import append_to_json
+from ..helper import writefile
 from datetime import datetime
 
 # create a router for logs handling routes
@@ -24,8 +24,8 @@ async def save_error_logs(email_name: str, payload: dict = Body(...)):
         if not os.path.exists(OUTPUT_DIR):
             os.makedirs(OUTPUT_DIR)
         if not os.path.exists(fname):
-            append_to_json([], fname)
-        append_to_json(recordlogs, fname)
+            writefile.append_to_json([], fname)
+        writefile.append_to_json(recordlogs, fname)
 
         return {"status": "ok", "saved_to": str(fname), "ts": datetime.now().isoformat()}
     except HTTPException:

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from . import config
 from .routes import auth, inputhandle, predict_data_vid, predict_data_img, ref_data, get_feedback, logs_record, logs_analysis, get_version
-from .helper import help_be
+from .helper import writefile
 from fastapi.responses import JSONResponse
 
 # create a backend server using FastAPI
@@ -39,6 +39,7 @@ os.makedirs(config.UPLOAD_DIR, exist_ok=True)
 os.makedirs(config.OUTPUT_DIR, exist_ok=True)
 os.makedirs(config.REFDATA_DIR, exist_ok=True)
 os.makedirs(config.FEEDBACK_DIR, exist_ok=True)
+os.makedirs(config.FEEDBACK_ATTACHMENT_DIR, exist_ok=True)
 os.makedirs(config.ANALYSISLOGS_DIR, exist_ok=True)
 app.mount(f"{config.UPLOAD_DIR}".replace(".", ""), StaticFiles(directory=config.UPLOAD_DIR), name="upload")
 app.mount(f"{config.OUTPUT_DIR}".replace(".", ""), StaticFiles(directory=config.OUTPUT_DIR), name="output_logs")
@@ -46,12 +47,12 @@ app.mount(f"{config.ANALYSISLOGS_DIR}".replace(".", ""), StaticFiles(directory=c
 app.mount("/reference", StaticFiles(directory=config.REFDATA_DIR), name="reference")
 
 # create empty json files if not exist
-help_be.init_json_file(config.AUTH_FILE_PATH)
-help_be.init_json_file(config.INPUT_FILE_PATH)
-help_be.init_json_file(config.DATAREF_FILE_PATH_JSON)
-help_be.init_csv_file(config.DATAREF_FILE_PATH_CSV, headers=["img","title","description"])
-help_be.init_json_file(config.ATTACHMENT_FEEDBACK_FILE_PATH_JSON)
-help_be.init_json_file(config.VERSION_FILE_PATH)
+writefile.init_json_file(config.AUTH_FILE_PATH)
+writefile.init_json_file(config.INPUT_FILE_PATH)
+writefile.init_json_file(config.DATAREF_FILE_PATH_JSON)
+writefile.init_csv_file(config.DATAREF_FILE_PATH_CSV, headers=["img","title","description"])
+writefile.init_json_file(config.ATTACHMENT_FEEDBACK_FILE_PATH_JSON)
+writefile.init_json_file(config.VERSION_FILE_PATH)
 
 # define a route for the home page
 @app.get("/")

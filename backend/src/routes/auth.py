@@ -2,7 +2,7 @@ import json
 import os
 from fastapi import APIRouter, HTTPException
 from ..schemas import LoginRequest
-from .write2json import write_to_json
+from ..helper import writefile
 from ..config import AUTH_FILE_PATH, FEEDBACK_DIR, OUTPUT_DIR
 from pathlib import Path
 
@@ -37,7 +37,7 @@ def login(request: LoginRequest):
         pass
 
     try:
-        write_to_json(result, AUTH_FILE_PATH)
+        writefile.append_to_json(result, AUTH_FILE_PATH)
     except Exception:
         raise HTTPException(status_code=500, detail="Failed to write auth file")
     

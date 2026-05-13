@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, Request, Form
 from ..config import UPLOAD_DIR, INPUT_FILE_PATH
-from .write2json import write_to_json
+from ..helper import writefile
 import os
 
 # create a router for input handling routes
@@ -22,7 +22,7 @@ async def upload_video(request: Request, file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         f.write(await file.read())
 
-    write_to_json({"video_filepath": file_path}, INPUT_FILE_PATH)
+    writefile.append_to_json({"video_filepath": file_path}, INPUT_FILE_PATH)
 
     return {
         "videoUrl": str(request.url_for("upload", path=filename))
@@ -41,7 +41,7 @@ async def set_option_video(requestOption: Request):
         "Speed": data["value"]["Speed"]
     }
 
-    write_to_json(data_ret, INPUT_FILE_PATH)
+    writefile.append_to_json(data_ret, INPUT_FILE_PATH)
 
     return data_ret
 ############################# api/video/set_option #############################
@@ -69,7 +69,7 @@ async def upload_folder(
 
       filepaths.append(full_path)
 
-  write_to_json({"folder_filepath": filepaths}, INPUT_FILE_PATH)
+  writefile.append_to_json({"folder_filepath": filepaths}, INPUT_FILE_PATH)
 
   return {
       "filepaths": filepaths

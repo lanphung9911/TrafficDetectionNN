@@ -2,7 +2,7 @@ import json
 from fastapi import APIRouter, Body, HTTPException
 import os
 from ..config import ANALYSISLOGS_DIR
-from .write2json import append_to_json
+from ..helper import writefile
 from datetime import datetime
 
 # create a router for logs handling routes
@@ -20,8 +20,8 @@ async def save_analysis_logs(system_version: str, payload: dict = Body(...)):
         if not os.path.exists(ANALYSISLOGS_DIR):
             os.makedirs(ANALYSISLOGS_DIR)
         if not os.path.exists(fname):
-            append_to_json([], fname)
-        append_to_json(recordlogs, fname)
+            writefile.append_to_json([], fname)
+        writefile.append_to_json(recordlogs, fname)
         return {"status": "ok", "saved_to": str(fname), "ts": datetime.now().isoformat()}
     except HTTPException:
         raise

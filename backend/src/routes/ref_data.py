@@ -2,7 +2,7 @@ import json, csv
 
 from fastapi import APIRouter
 from ..config import DATAREF_FILE_PATH_CSV, DATAREF_FILE_PATH_JSON
-from .write2json import overwrite_to_json
+from ..helper import writefile
 
 ref_data_router = APIRouter()
 
@@ -25,6 +25,6 @@ async def get_ref_data_endpoint():
             rows_json.append(item_json)
 
     # write the data to a json file
-    overwrite_to_json(rows_json, DATAREF_FILE_PATH_JSON)
+    writefile.overwrite_to_json(rows_json, DATAREF_FILE_PATH_JSON)
 
     return rows_json

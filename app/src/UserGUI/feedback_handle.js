@@ -1,23 +1,22 @@
 export async function handleFeedback({ email_name, rating, evaluateOption, attachFile, feedbackText }) {
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
+  const formData = new FormData();
+  formData.append("email_name", email_name);
+  formData.append("rating", rating);
+  formData.append("evaluateOption", evaluateOption);
+  formData.append("feedbackText", feedbackText);
+
+  if (attachFile) {
+    formData.append("attachFile", attachFile);
+  }
+
   const res = await fetch(`${baseUrl}/api/user/feedback`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      email_name,
-      rating,
-      evaluateOption,
-      attachFile: attachFile?.name ?? null,
-      feedbackText,
-    }),
+    body: formData,
   });
 
-  const data = await res.json();
-  return data;
+  return res.json();
 }
 
 export async function fetchFeedback({email_name}) {
@@ -30,6 +29,5 @@ export async function fetchFeedback({email_name}) {
     },
   });
 
-  const data = await res.json();
-  return data;
+  return res.json();
 }
