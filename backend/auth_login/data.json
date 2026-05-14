@@ -100,5 +100,35 @@
         "password": "a",
         "role": "DataScientist",
         "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "trieu@email.com",
+        "password": "a",
+        "role": "Admin",
+        "permission": "full-access"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "dat@email.com",
+        "password": "a",
+        "role": "DataScientist",
+        "permission": "read-only"
+    },
+    {
+        "email": "user@email.com",
+        "password": "a",
+        "role": "User",
+        "permission": "read-only"
     }
 ]

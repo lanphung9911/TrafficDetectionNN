@@ -1,0 +1,106 @@
+{
+  "total_classes": 43,
+  "total_samples": 73139,
+  "top_20_classes": [
+    {
+      "class_id": 1,
+      "class_name": "Speed limit (30km/h)",
+      "num_samples": 4920
+    },
+    {
+      "class_id": 13,
+      "class_name": "Yield",
+      "num_samples": 4080
+    },
+    {
+      "class_id": 12,
+      "class_name": "Priority road",
+      "num_samples": 3990
+    },
+    {
+      "class_id": 38,
+      "class_name": "Keep right",
+      "num_samples": 3930
+    },
+    {
+      "class_id": 10,
+      "class_name": "No passing for vechiles over 3.5 metric tons",
+      "num_samples": 3810
+    },
+    {
+      "class_id": 4,
+      "class_name": "Speed limit (70km/h)",
+      "num_samples": 3750
+    },
+    {
+      "class_id": 5,
+      "class_name": "Speed limit (80km/h)",
+      "num_samples": 3510
+    },
+    {
+      "class_id": 25,
+      "class_name": "Road work",
+      "num_samples": 2850
+    },
+    {
+      "class_id": 9,
+      "class_name": "No passing",
+      "num_samples": 2790
+    },
+    {
+      "class_id": 7,
+      "class_name": "Speed limit (100km/h)",
+      "num_samples": 2730
+    },
+    {
+      "class_id": 3,
+      "class_name": "Speed limit (60km/h)",
+      "num_samples": 2670
+    },
+    {
+      "class_id": 8,
+      "class_name": "Speed limit (120km/h)",
+      "num_samples": 2670
+    },
+    {
+      "class_id": 2,
+      "class_name": "Speed limit (50km/h)",
+      "num_samples": 2610
+    },
+    {
+      "class_id": 11,
+      "class_name": "Right-of-way at the next intersection",
+      "num_samples": 2490
+    },
+    {
+      "class_id": 18,
+      "class_name": "General caution",
+      "num_samples": 2280
+    },
+    {
+      "class_id": 35,
+      "class_name": "Ahead only",
+      "num_samples": 2280
+    },
+    {
+      "class_id": 17,
+      "class_name": "No entry",
+      "num_samples": 2100
+    },
+    {
+      "class_id": 14,
+      "class_name": "Stop",
+      "num_samples": 1470
+    },
+    {
+      "class_id": 31,
+      "class_name": "Wild animals crossing",
+      "num_samples": 1470
+    },
+    {
+      "class_id": 33,
+      "class_name": "Turn right ahead",
+      "num_samples": 1288
+    }
+  ]
+}

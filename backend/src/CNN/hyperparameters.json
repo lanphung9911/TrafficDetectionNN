@@ -1,0 +1,26 @@
+{
+  "hyperparameters": {
+    "learning_rate": 0.015,
+    "batch_size": 200,
+    "epochs": 15,
+    "optimizer": "Adam",
+    "loss_function": "Categorical CE",
+    "input_shape": "32×32×3"
+  },
+  "augmentation": {
+    "rotation": "+15°",
+    "width_shift": "10%",
+    "height_shift": "10%",
+    "zoom_range": "20%",
+    "horizontal_flip": false,
+    "preprocessing": "Normalize /255"
+  },
+  "statistics": {
+    "total_parameters": "284.22K",
+    "trainable_params": "284.22K",
+    "model_size": "1.09 MB",
+    "conv_layers": 3,
+    "dense_layers": 2,
+    "training_time": "~2.3 phút"
+  }
+}
