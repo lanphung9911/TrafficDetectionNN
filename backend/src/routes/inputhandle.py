@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Request, Form
+from fastapi import APIRouter, UploadFile, File, Form
 from ..config import UPLOAD_DIR, INPUT_FILE_PATH
 from ..helper import writefile
 import os
@@ -6,48 +6,7 @@ import os
 # create a router for input handling routes
 inputSrcHandle_router = APIRouter()
 
-############################### api/video/upload ###############################
-# create a route for video upload as POST (receives from frontend)
-@inputSrcHandle_router.post("/upload_video")
-async def upload_video(request: Request, file: UploadFile = File(...)):
-
-    # create upload folder to store uploaded video files from frontend
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-    # create empty file in upload folder with the same name as the uploaded file
-    filename = file.filename
-    file_path = os.path.join(UPLOAD_DIR, filename).replace("\\", "/")
-
-    # save the uploaded file to the upload folder
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
-    writefile.append_to_json({"video_filepath": file_path}, INPUT_FILE_PATH)
-
-    return {
-        "videoUrl": str(request.url_for("upload", path=filename))
-    }
-############################### api/video/upload ###############################
-
-
-############################# api/video/set_option #############################
-# create a route for video upload as POST (receives from frontend)
-@inputSrcHandle_router.post("/set_option")
-async def set_option_video(requestOption: Request):
-    data = await requestOption.json()
-
-    data_ret = {
-        "FPS": data["value"]["FPS"],
-        "Speed": data["value"]["Speed"]
-    }
-
-    writefile.append_to_json(data_ret, INPUT_FILE_PATH)
-
-    return data_ret
-############################# api/video/set_option #############################
-
-########################### api/video/upload_folder ############################
-# create a route for video upload as POST (receives from frontend)
+# create a route for folder upload as POST (receives from frontend)
 @inputSrcHandle_router.post("/upload_folder")
 async def upload_folder(
     files: list[UploadFile] = File(...),
@@ -74,4 +33,3 @@ async def upload_folder(
   return {
       "filepaths": filepaths
   }
-########################### api/video/upload_folder ############################

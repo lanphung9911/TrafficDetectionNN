@@ -50,9 +50,9 @@ export default function MainGUI() {
       else if (role === "Admin") {
         navigate("/AdminGUI_feedback");
       } 
-      else if (role === "User") {
-        navigate("/UserGUI_runtime");
-      }
+      else {if (role === "User") {
+        navigate("/UserGUI_static");
+      }}
     } catch (err) {
       setLoginError(err.message || "Login failed");
 

@@ -27,10 +27,7 @@ const UserGUI_static = () => {
   {/* items selected in navigation menu, default is "menu_Static" */}
   const navigate = useNavigate();
   const onNavItemClick = (item) => {
-    if (item === "menu_RunTime") {
-      navigate("/UserGUI_runtime", "_blank");
-    }
-    else if (item === "menu_Static") {
+    if (item === "menu_Static") {
       /* Do nothing */
     }
     else if (item === "menu_Reference") {
@@ -193,11 +190,6 @@ const UserGUI_static = () => {
             </div>
 
             <nav className="nav-menu">
-              <button className={`nav-item`}
-              onClick={() => onNavItemClick("menu_RunTime")}>
-                <div className="nav-icon"></div>
-                <span>{UserGUI_describe.Navi_Menu.menu_RunTime}</span>
-              </button>
               <button className={`nav-item ${navItems === "menu_Static" ? "active" : ""}`}
               onClick={() => onNavItemClick("menu_Static")}>
                 <div className="nav-icon"></div>
