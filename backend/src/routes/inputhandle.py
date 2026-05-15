@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Form
+from fastapi import APIRouter, UploadFile, File, Request, Form
 from ..config import UPLOAD_DIR, INPUT_FILE_PATH, OUTPUT_DIR
 from ..helper import writefile
 import os, json
@@ -178,9 +178,6 @@ async def upload_folder(
 
   writefile.append_to_json({"folder_filepath": filepaths}, INPUT_FILE_PATH)
 
-  classify("C:/Users/TDA5HC/Desktop/Documents/01_CS_Master/07_MachineLearning/BTL/archive/input/traffic-signs-classification/myData/1/00000_00000.jpg")
-
-
   # Run prediction on all images in the folder
   prediction_results = []
   image_extensions = ('.jpg', '.jpeg', '.png', '.bmp', '.gif')
@@ -228,3 +225,79 @@ async def upload_folder(
       "output_json": output_json_path
   }
 ########################### api/video/upload_folder ############################
+
+########################### api/video/predict_image ############################
+# create a route to predict single image (for next/previous image buttons)
+@inputSrcHandle_router.post("/predict_image")
+async def predict_image(request: Request):
+    data = await request.json()
+    image_path = data.get("image_path")
+    
+    if not image_path:
+        return {"error": "No image path provided"}
+    
+    try:
+        result = prediction(image_path)
+        return {
+            "status": "success",
+            "filepath": image_path,
+            "class_id": result["class_id"],
+            "name": result["name"],
+            "confidence": result["confidence"]
+        }
+    except Exception as e:
+        return {"error": str(e)}
+########################### api/video/predict_image ############################
+
+########################### api/video/cleanup ############################
+# create a route to cleanup upload folder and prediction json files
+import shutil
+import glob
+
+@inputSrcHandle_router.post("/cleanup")
+async def cleanup_uploads():
+    """
+    Delete all files in upload folder and prediction_*.json files
+    Called when user clicks Reset or refreshes the page
+    """
+    deleted_files = []
+    errors = []
+    
+    # Get absolute paths
+    backend_dir = os.path.join(_script_dir, '..', '..')
+    upload_dir_abs = os.path.abspath(os.path.join(backend_dir, UPLOAD_DIR))
+    output_dir_abs = os.path.abspath(os.path.join(backend_dir, OUTPUT_DIR))
+    
+    # Delete contents of upload folder
+    if os.path.exists(upload_dir_abs):
+        for item in os.listdir(upload_dir_abs):
+            item_path = os.path.join(upload_dir_abs, item)
+            try:
+                if os.path.isfile(item_path):
+                    os.remove(item_path)
+                    deleted_files.append(item_path)
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+                    deleted_files.append(item_path)
+            except Exception as e:
+                errors.append(f"Error deleting {item_path}: {str(e)}")
+    
+    # Delete prediction_*.json files in output_logs folder
+    if os.path.exists(output_dir_abs):
+        prediction_files = glob.glob(os.path.join(output_dir_abs, "predictions_*.json"))
+        for file_path in prediction_files:
+            try:
+                os.remove(file_path)
+                deleted_files.append(file_path)
+            except Exception as e:
+                errors.append(f"Error deleting {file_path}: {str(e)}")
+    
+    print(f"Cleanup completed. Deleted {len(deleted_files)} items.")
+    
+    return {
+        "status": "success",
+        "deleted_count": len(deleted_files),
+        "deleted_files": deleted_files,
+        "errors": errors
+    }
+########################### api/video/cleanup ############################
