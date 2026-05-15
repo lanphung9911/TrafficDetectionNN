@@ -1,0 +1,36 @@
+# Training Configuration
+# This file configures the notebook training settings
+
+notebook:
+  # Path to the Jupyter notebook (relative to backend/src/ or absolute path)
+  path: "CNN/traffic-sign-recognition-using-pytorch-and-cnn.ipynb"
+  
+  # Timeout for each cell execution in seconds (default: 3600 = 1 hour)
+  cell_timeout: 3600
+  
+  # Whether to save the notebook after execution
+  save_after_execution: true
+
+kernel:
+  # Python kernel name (e.g., 'python3', 'conda-env-myenv-py')
+  name: "python3"
+  
+  # Optional: Explicit path to Python executable
+  # Leave empty to use the kernel's default Python
+  # Example: "C:/toolbase/python/3.12.13.1/python.exe"
+  python_path: ""
+
+execution:
+  # Progress update interval in seconds
+  progress_interval: 3
+  
+  # Maximum total execution time in seconds (default: 7200 = 2 hours)
+  max_execution_time: 7200
+
+logging:
+  # Enable verbose logging
+  verbose: true
+  
+  # Log file path (relative to backend/ or absolute)
+  # Leave empty to disable file logging
+  log_file: ""

@@ -2,39 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DataScientistGUI_Dataset.css";
 import DataScientistGUI_describe from "./DataScientistGUI_describe.json";
+import evaluationData from "../../../backend/src/CNN/classification_report.json";
 import { saveLogs } from "../utils/savelog";
 import { getSystemVersion } from "../utils/get_system_version";
+import { useTraining } from "./TrainingContext";
 
-const summaryCards = [
-  {
-    title: "Accuracy",
-    value: "94.3%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "A",
-    className: "accuracy",
-  },
-  {
-    title: "Precision",
-    value: "93.8%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "P",
-    className: "precision",
-  },
-  {
-    title: "Recall",
-    value: "94.1%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "R",
-    className: "recall",
-  },
-  {
-    title: "F1-Score",
-    value: "93.9%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "F",
-    className: "f1",
-  },
-];
+const summaryCards = evaluationData.summaryCards;
 
 const classDistribution = [
   { label: "Speed 30", value: 2200, color: "#4f83ff" },
@@ -68,6 +41,10 @@ const DataScientistGUI_Dataset = () => {
 
   {/* get system version from backend and display it */}
   const [systemVersion, setSystemVersion] = useState(null);
+
+  {/* Use training context for global state management */}
+  const { trainingProgress, trainingStatus, trainingMessage } = useTraining();
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -226,18 +203,28 @@ const DataScientistGUI_Dataset = () => {
 
               <footer className="ds-footer">
                 <div className="ds-footer-title">
-                  <strong>Model CNN v2.2 Training...</strong>
-                  <span>Epoch 45/50 - Val Acc: 93.4% - ETA: ~3 min</span>
+                  <strong>
+                    {trainingStatus === "running" ? "Model CNN Training..." : 
+                     trainingStatus === "completed" ? "Training Completed" :
+                     trainingStatus === "error" ? "Training Error" : "Model CNN v2.2"}
+                  </strong>
+                  <span>
+                    {trainingMessage || (trainingStatus === "idle" ? "Ready to train" : "")}
+                  </span>
                 </div>
 
                 <div className="ds-progress-block">
                   <div className="ds-progress-copy">
-                    <span>Progress: 90%</span>
+                    <span>Progress: {trainingProgress}%</span>
                   </div>
                   <div className="ds-progress-track" aria-hidden="true">
-                    <div className="ds-progress-fill" />
+                    <div className="ds-progress-fill" style={{ width: `${trainingProgress}%` }} />
                   </div>
-                  <div className="ds-progress-eta">~3 min remaining</div>
+                  <div className="ds-progress-eta">
+                    {trainingStatus === "running" ? "Training in progress..." : 
+                     trainingStatus === "completed" ? "Done!" : 
+                     trainingStatus === "error" ? "Failed" : "Waiting"}
+                  </div>
                 </div>
               </footer>
             </div>

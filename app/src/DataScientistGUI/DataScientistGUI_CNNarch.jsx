@@ -2,39 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DataScientistGUI_CNNarch.css";
 import DataScientistGUI_describe from "./DataScientistGUI_describe.json";
+import evaluationData from "../../../backend/src/CNN/classification_report.json";
 import { saveLogs } from "../utils/savelog";
 import { getSystemVersion } from "../utils/get_system_version";
+import { useTraining } from "./TrainingContext";
 
-const summaryCards = [
-  {
-    title: "Accuracy",
-    value: "94.3%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "A",
-    className: "accuracy",
-  },
-  {
-    title: "Precision",
-    value: "93.8%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "P",
-    className: "precision",
-  },
-  {
-    title: "Recall",
-    value: "94.1%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "R",
-    className: "recall",
-  },
-  {
-    title: "F1-Score",
-    value: "93.9%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "F",
-    className: "f1",
-  },
-];
+const summaryCards = evaluationData.summaryCards;
 
 const architectureLegend = [
   { label: "Conv2D", className: "legend-conv" },
@@ -100,6 +73,17 @@ const DataScientistGUI_CNNarch = () => {
 
   {/* get system version from backend and display it */}
   const [systemVersion, setSystemVersion] = useState(null);
+
+  {/* Use training context for global state management */}
+  const { 
+    isTraining, 
+    trainingProgress, 
+    trainingStatus, 
+    trainingMessage,
+    startTraining,
+    stopTraining 
+  } = useTraining();
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -109,6 +93,27 @@ const DataScientistGUI_CNNarch = () => {
     })();
     return () => { mounted = false; };
   }, []);
+
+  {/* Handle training button click */}
+  const handleStartTraining = async () => {
+    if (isTraining) {
+      // Stop training
+      await stopTraining();
+      return;
+    }
+
+    // Confirm before starting
+    if (!window.confirm("Start CNN training? This may take several minutes.")) {
+      return;
+    }
+
+    const result = await startTraining();
+    if (result.success) {
+      // Training started successfully
+    } else {
+      console.error("Failed to start training:", result.error);
+    }
+  };
 
   {/* items selected in navigation menu, default is "menu_Archive" */}
   const navigate = useNavigate();
@@ -260,8 +265,14 @@ const DataScientistGUI_CNNarch = () => {
 
                   <div className="cnn-actions">
                     {actionButtons.map((button) => (
-                      <button key={button.label} type="button" className={`cnn-action-btn ${button.className}`}>
-                        {button.label}
+                      <button
+                        key={button.label}
+                        type="button"
+                        className={`cnn-action-btn ${button.className} ${button.label === "Start Training" && isTraining ? "training" : ""}`}
+                        onClick={button.label === "Start Training" ? handleStartTraining : undefined}
+                        disabled={button.label === "Start Training" && trainingStatus === "running" && !isTraining}
+                      >
+                        {button.label === "Start Training" && isTraining ? "Stop Training" : button.label}
                       </button>
                     ))}
                   </div>
@@ -270,18 +281,28 @@ const DataScientistGUI_CNNarch = () => {
 
               <footer className="ds-footer">
                 <div className="ds-footer-title">
-                  <strong>Model CNN v2.2 Training...</strong>
-                  <span>Epoch 45/50 - Val Acc: 93.4% - ETA: ~3 min</span>
+                  <strong>
+                    {trainingStatus === "running" ? "Model CNN Training..." : 
+                     trainingStatus === "completed" ? "Training Completed" :
+                     trainingStatus === "error" ? "Training Error" : "Model CNN v2.2"}
+                  </strong>
+                  <span>
+                    {trainingMessage || (trainingStatus === "idle" ? "Ready to train" : "")}
+                  </span>
                 </div>
 
                 <div className="ds-progress-block">
                   <div className="ds-progress-copy">
-                    <span>Progress: 90%</span>
+                    <span>Progress: {trainingProgress}%</span>
                   </div>
                   <div className="ds-progress-track" aria-hidden="true">
-                    <div className="ds-progress-fill" />
+                    <div className="ds-progress-fill" style={{ width: `${trainingProgress}%` }} />
                   </div>
-                  <div className="ds-progress-eta">~3 min remaining</div>
+                  <div className="ds-progress-eta">
+                    {trainingStatus === "running" ? "Training in progress..." : 
+                     trainingStatus === "completed" ? "Done!" : 
+                     trainingStatus === "error" ? "Failed" : "Waiting"}
+                  </div>
                 </div>
               </footer>
             </div>
