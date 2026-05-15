@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Request, Form
+from fastapi import APIRouter, UploadFile, File, Form
 from ..config import UPLOAD_DIR, INPUT_FILE_PATH, OUTPUT_DIR
 from ..helper import writefile
 import os, json
@@ -154,48 +154,7 @@ def prediction(img_path):
         "name": pred_str,
         "confidence": round(confidence * 100, 2)  # Convert to percentage
     }
-############################### api/video/upload ###############################
-# create a route for video upload as POST (receives from frontend)
-@inputSrcHandle_router.post("/upload_video")
-async def upload_video(request: Request, file: UploadFile = File(...)):
-
-    # create upload folder to store uploaded video files from frontend
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-    # create empty file in upload folder with the same name as the uploaded file
-    filename = file.filename
-    file_path = os.path.join(UPLOAD_DIR, filename).replace("\\", "/")
-
-    # save the uploaded file to the upload folder
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
-    writefile.append_to_json({"video_filepath": file_path}, INPUT_FILE_PATH)
-
-    return {
-        "videoUrl": str(request.url_for("upload", path=filename))
-    }
-############################### api/video/upload ###############################
-
-
-############################# api/video/set_option #############################
-# create a route for video upload as POST (receives from frontend)
-@inputSrcHandle_router.post("/set_option")
-async def set_option_video(requestOption: Request):
-    data = await requestOption.json()
-
-    data_ret = {
-        "FPS": data["value"]["FPS"],
-        "Speed": data["value"]["Speed"]
-    }
-
-    writefile.append_to_json(data_ret, INPUT_FILE_PATH)
-
-    return data_ret
-############################# api/video/set_option #############################
-
-########################### api/video/upload_folder ############################
-# create a route for video upload as POST (receives from frontend)
+# create a route for folder upload as POST (receives from frontend)
 @inputSrcHandle_router.post("/upload_folder")
 async def upload_folder(
     files: list[UploadFile] = File(...),
@@ -269,79 +228,3 @@ async def upload_folder(
       "output_json": output_json_path
   }
 ########################### api/video/upload_folder ############################
-
-########################### api/video/predict_image ############################
-# create a route to predict single image (for next/previous image buttons)
-@inputSrcHandle_router.post("/predict_image")
-async def predict_image(request: Request):
-    data = await request.json()
-    image_path = data.get("image_path")
-    
-    if not image_path:
-        return {"error": "No image path provided"}
-    
-    try:
-        result = prediction(image_path)
-        return {
-            "status": "success",
-            "filepath": image_path,
-            "class_id": result["class_id"],
-            "name": result["name"],
-            "confidence": result["confidence"]
-        }
-    except Exception as e:
-        return {"error": str(e)}
-########################### api/video/predict_image ############################
-
-########################### api/video/cleanup ############################
-# create a route to cleanup upload folder and prediction json files
-import shutil
-import glob
-
-@inputSrcHandle_router.post("/cleanup")
-async def cleanup_uploads():
-    """
-    Delete all files in upload folder and prediction_*.json files
-    Called when user clicks Reset or refreshes the page
-    """
-    deleted_files = []
-    errors = []
-    
-    # Get absolute paths
-    backend_dir = os.path.join(_script_dir, '..', '..')
-    upload_dir_abs = os.path.abspath(os.path.join(backend_dir, UPLOAD_DIR))
-    output_dir_abs = os.path.abspath(os.path.join(backend_dir, OUTPUT_DIR))
-    
-    # Delete contents of upload folder
-    if os.path.exists(upload_dir_abs):
-        for item in os.listdir(upload_dir_abs):
-            item_path = os.path.join(upload_dir_abs, item)
-            try:
-                if os.path.isfile(item_path):
-                    os.remove(item_path)
-                    deleted_files.append(item_path)
-                elif os.path.isdir(item_path):
-                    shutil.rmtree(item_path)
-                    deleted_files.append(item_path)
-            except Exception as e:
-                errors.append(f"Error deleting {item_path}: {str(e)}")
-    
-    # Delete prediction_*.json files in output_logs folder
-    if os.path.exists(output_dir_abs):
-        prediction_files = glob.glob(os.path.join(output_dir_abs, "predictions_*.json"))
-        for file_path in prediction_files:
-            try:
-                os.remove(file_path)
-                deleted_files.append(file_path)
-            except Exception as e:
-                errors.append(f"Error deleting {file_path}: {str(e)}")
-    
-    print(f"Cleanup completed. Deleted {len(deleted_files)} items.")
-    
-    return {
-        "status": "success",
-        "deleted_count": len(deleted_files),
-        "deleted_files": deleted_files,
-        "errors": errors
-    }
-########################### api/video/cleanup ############################

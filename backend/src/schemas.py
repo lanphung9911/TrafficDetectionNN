@@ -6,6 +6,7 @@ class LoginRequest(BaseModel):
     password: str
     role: str
 
+# reserve for future video upload, can be extended with more fields if needed
 class VideoUploadRequest(BaseModel):
     videoFile: bytes
 

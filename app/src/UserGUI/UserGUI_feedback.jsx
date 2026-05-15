@@ -26,9 +26,7 @@ const UserGUI_feedback = () => {
 
   {/* items selected in navigation menu, default is "menu_Feedback" */}
   const onNavItemClick = (item) => {
-    if (item === "menu_RunTime") {
-      navigate("/UserGUI_runtime", "_blank");
-    } else if (item === "menu_Static") {
+    if (item === "menu_Static") {
       navigate("/UserGUI_static", "_blank");
     } else if (item === "menu_Reference") {
       navigate("/UserGUI_reference", "_blank");
@@ -147,11 +145,6 @@ const UserGUI_feedback = () => {
             </div>
 
             <nav className="nav-menu">
-              <button className={`nav-item`}
-              onClick={() => onNavItemClick("menu_RunTime")}>
-                <div className="nav-icon"></div>
-                <span>{UserGUI_describe.Navi_Menu.menu_RunTime}</span>
-              </button>
               <button className={`nav-item`}
               onClick={() => onNavItemClick("menu_Static")}>
                 <div className="nav-icon"></div>
