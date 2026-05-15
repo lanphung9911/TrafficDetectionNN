@@ -5,12 +5,14 @@ import csv
 
 '''    init an empty json file if not exist, to avoid file not found error when writing feedback data to json file  '''
 def init_json_file(file_path):
+    file_path = file_path.replace("\\", "/")
     if not os.path.exists(file_path):
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump([], f)
 
 '''    init an empty csv file if not exist, to avoid file not found error when writing feedback data to csv file  '''
 def init_csv_file(file_path, headers):
+    file_path = file_path.replace("\\", "/")
     if not os.path.exists(file_path):
         with open(file_path, "w", encoding="utf-8", newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
@@ -18,11 +20,13 @@ def init_csv_file(file_path, headers):
 
 '''    overwrite an existing json file with new data  '''
 def overwrite_to_json(new_data, file_path):
+    file_path = file_path.replace("\\", "/")
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(new_data, f, indent=4)
 
 '''    append new data to an existing json file  '''
 def append_to_json(new_data, file_path):
+    file_path = file_path.replace("\\", "/")
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     try:
