@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import './UserGUI_static.css';
 import UserGUI_describe from "./UserGUI_describe.json";
 import { handleFolderSelect } from "./submit_handle";
-import { API_BASE_URL, LIST_FOLDER_DIR } from "../config";
+import { API_BASE_URL, LIST_FOLDER_DIR, CLEANUP } from "../config";
 import { getSystemVersion } from "../utils/get_system_version";
 import { saveLogs } from "../utils/savelog";
 
@@ -11,6 +11,24 @@ const UserGUI_static = () => {
   const navItems = "menu_Static";
   const email = localStorage.getItem("loginEmail");
   const email_name = email ? email.split("@")[0] : "User";
+
+  // Helper function to call cleanup API
+  const callCleanup = async () => {
+    try {
+      await fetch(`${API_BASE_URL}${CLEANUP}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      console.log("Cleanup completed");
+    } catch (err) {
+      console.error("Error calling cleanup:", err);
+    }
+  };
+
+  // Cleanup on page load/refresh
+  useEffect(() => {
+    callCleanup();
+  }, []);
 
   {/* get system version from backend and display it */}
   const [systemVersion, setSystemVersion] = useState(null);
@@ -54,6 +72,40 @@ const UserGUI_static = () => {
 
   {/* on submit of folder source */}
   const [countofImgs, setcountofImgs] = useState(0);
+  const [predictions, setPredictions] = useState([]); // Store prediction results for each image
+
+  // Calculate top 5 most common traffic signs from predictions
+  const top5TrafficSigns = useMemo(() => {
+    if (!predictions || predictions.length === 0) return [];
+
+    // Count occurrences of each class_id
+    const classCount = {};
+    predictions.forEach((pred) => {
+      const classId = pred.class_id;
+      const name = pred.name;
+      if (classCount[classId]) {
+        classCount[classId].count += 1;
+      } else {
+        classCount[classId] = { class_id: classId, name: name, count: 1 };
+      }
+    });
+
+    // Convert to array and sort by count descending
+    const sorted = Object.values(classCount).sort((a, b) => b.count - a.count);
+
+    // Take top 5
+    const top5 = sorted.slice(0, 5);
+
+    // Calculate total for percentage
+    const total = predictions.length;
+
+    // Add percentage
+    return top5.map((item) => ({
+      ...item,
+      percent: ((item.count / total) * 100).toFixed(1),
+    }));
+  }, [predictions]);
+
   const onFolderSubmit = async (event) => {
     const files = event.target.files;
     if (!folderInputRef.current) return;
@@ -64,6 +116,7 @@ const UserGUI_static = () => {
     setImages([]);
     setCurrentImgIndex(0);
     setFolderName("");
+    setPredictions([]);
 
     for (let i = 0; i < files.length; i++) {
       const url = URL.createObjectURL(files[i]);
@@ -79,6 +132,11 @@ const UserGUI_static = () => {
     localStorage.setItem("folder_images", JSON.stringify(urls));
 
     const result = await handleFolderSelect(files);
+
+    // Store predictions from backend response (from predictions_*.json)
+    if (result && result.predictions) {
+      setPredictions(result.predictions);
+    }
 
     // get folder name to show in content area
     const folder_name = files[0].webkitRelativePath.split("/")[0];
@@ -100,11 +158,15 @@ const UserGUI_static = () => {
     }
   }
 
-  const onResetClick = () => {
+  const onResetClick = async () => {
+    // Call cleanup API to delete upload folder and prediction files
+    await callCleanup();
+    
     setImages([]);
     setCurrentImgIndex(0);
     setFolderName("");
     setcountofImgs(0);
+    setPredictions([]);
     if (folderInputRef.current) {
       folderInputRef.current.value = "";
     }
@@ -121,42 +183,6 @@ const UserGUI_static = () => {
   };
   fetchImages();}, 
   [folderName]);
-
-  {/* on receive predict data from backend */}
-  const [dataPredict, setDataPredict] = React.useState(null);
-  React.useEffect(() => {
-    let ws;
-    let reconnectTimeout;
-
-    const wsBase = new URL(API_BASE_URL);
-    const wsProtocol = wsBase.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = wsProtocol + "//" + wsBase.host + "/ws/predict_img";
-
-    const connect = () => {
-      ws = new WebSocket(wsUrl);
-      ws.onmessage = (event) => {
-        try {
-          const data_received = JSON.parse(event.data);
-          setDataPredict(data_received);
-        } catch (err) {
-          console.error("Invalid payload:", err);
-        }
-      };
-      ws.onclose = () => {
-        reconnectTimeout = setTimeout(connect, 500);
-      };
-      ws.onerror = () => {
-        ws.close();
-      };
-    };
-
-    connect();
-
-    return () => {
-      clearTimeout(reconnectTimeout);
-      ws?.close();
-    };
-  }, []);
 
   {/* on click reset button to reset map marker */}
   const onClickResetButton = () => {
@@ -281,11 +307,30 @@ const UserGUI_static = () => {
                     />
                   )}
                   <div className="info-overlay top-overlay">
-                    <p>TimeStamp:</p>
-                    <p>Lat:</p>
-                    <p>Long:</p>
-                    <p>Traffic Sign:</p>
-                    <p>Confidence:</p>
+                    <div className="info-row">
+                      <span className="info-label">TimeStamp</span>
+                      <span className="info-value">--</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Lat</span>
+                      <span className="info-value">--</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Long</span>
+                      <span className="info-value">--</span>
+                    </div>
+                    <div className="info-highlight">
+                      <div className="info-row">
+                        <span className="info-label">Traffic Sign</span>
+                        <span className="info-value">{predictions[currentImgIndex]?.name || '--'}</span>
+                      </div>
+                      <div className="info-row" style={{ marginTop: '4px' }}>
+                        <span className="info-label">Confidence</span>
+                        <span className="info-value" style={{ color: '#4ade80' }}>
+                          {predictions[currentImgIndex]?.confidence !== undefined ? `${predictions[currentImgIndex].confidence}%` : '--'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -295,60 +340,33 @@ const UserGUI_static = () => {
                 <h2 className="card-title center-title large-title">Review</h2>
                 <p className="review-subtitle">The most 5 traffic sign detected:</p>
                 <div className="progress-list">
-                {dataPredict && (
+                {top5TrafficSigns.length > 0 ? (
                   <>
-                      {/* first top traffic sign count and percent */}
-                      <div className="progress-item">
-                        <span className="progress-label">{dataPredict.traffic_sign_1}</span>
+                    {top5TrafficSigns.map((item, index) => (
+                      <div className="progress-item" key={item.class_id}>
+                        <span className="progress-label">{item.name}</span>
                         <div className="progress-bar-container">
-                          <div className="progress-bar" style={{ width: `${dataPredict.percent_of_total_1}%` }}></div>
-                        </div>
-                        <span className="progress-value">{dataPredict.count_1}</span>
-                      </div>
-                      {/* second top traffic sign count and percent */}
-                      <div className="progress-item">
-                        <span className="progress-label">{dataPredict.traffic_sign_2}</span>
-                        <div className="progress-bar-container">
-                          <div className="progress-bar" style={{ width: `${dataPredict.percent_of_total_2}%` }}></div>
-                        </div>
-                        <span className="progress-value">{dataPredict.count_2}</span>
-                      </div>
-                      {/* third top traffic sign count and percent */}
-                      <div className="progress-item">
-                        <span className="progress-label">{dataPredict.traffic_sign_3}</span>
-                        <div className="progress-bar-container">
-                          <div className="progress-bar" style={{ width: `${dataPredict.percent_of_total_3}%` }}></div>
-                        </div>
-                        <span className="progress-value">{dataPredict.count_3}</span>
-                      </div>
-                      {/* fourth top traffic sign count and percent */}
-                      <div className="progress-item">
-                        <span className="progress-label">{dataPredict.traffic_sign_4}</span>
-                        <div className="progress-bar-container">
-                          <div className="progress-bar" style={{ width: `${dataPredict.percent_of_total_4}%` }}></div>
-                        </div>
-                        <span className="progress-value">{dataPredict.count_4}</span>
-                      </div>
-                      {/* fifth top traffic sign count and percent */}
-                      <div className="progress-item">
-                        <span className="progress-label">{dataPredict.traffic_sign_5}</span>
-                        <div className="progress-bar-container">
-                          <div className="progress-bar" style={{ width: `${dataPredict.percent_of_total_5}%` }}></div>
-                        </div>
-                        <span className="progress-value">{dataPredict.count_5}</span>
-                      </div>
-                      <div className="stats-summary">
-                        <div className="stat-row">
-                          <span className="stat-label">Total:</span>
-                          <span className="stat-badge">{dataPredict.total_count}</span>
-                        </div>
-                        <div className="stat-row">
-                          <span className="stat-label">Confidence:</span>
-                          <span className="stat-badge">{dataPredict.confidence}%</span>
+                          <div className="progress-bar" style={{ width: `${item.percent}%` }}></div>
+                          <span className="progress-value">{item.count}</span>
                         </div>
                       </div>
+                    ))}
                   </>
+                ) : (
+                  <p style={{ color: '#999', fontSize: '12px', textAlign: 'center' }}>No predictions yet</p>
                 )}
+                <div className="stats-summary">
+                  <div className="stat-row">
+                    <span className="stat-label">Confidence:</span>
+                    <span className="stat-badge">{predictions[currentImgIndex]?.confidence !== undefined ? `${predictions[currentImgIndex].confidence}%` : '0%'}</span>
+                  </div>
+                </div>
+                <div className="stats-summary">
+                  <div className="stat-row">
+                    <span className="stat-label">Total:</span>
+                    <span className="stat-badge">{countofImgs}</span>
+                  </div>
+                </div>
                 </div>
               </div>
             </div>
@@ -360,10 +378,22 @@ const UserGUI_static = () => {
                 <div className="map-display">
                   <span className="placeholder-text">Map with marker</span>
                   <div className="info-overlay bottom-overlay">
-                    <p>Lat:</p>
-                    <p>Long:</p>
-                    <p>Traffic Sign:</p>
-                    <p>Confidence:</p>
+                    <div className="info-row">
+                      <span className="info-label">Lat</span>
+                      <span className="info-value">--</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Long</span>
+                      <span className="info-value">--</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Traffic Sign</span>
+                      <span className="info-value">--</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Confidence</span>
+                      <span className="info-value">--</span>
+                    </div>
                   </div>
                 </div>
               </div>

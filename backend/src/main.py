@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from . import config
-from .routes import auth, inputhandle, predict_data_vid, predict_data_img, ref_data, get_feedback, logs_record, logs_analysis, get_version, training
 from .helper import writefile
+from .routes import auth, inputhandle, predict_data_vid, predict_data_img, ref_data, get_feedback, logs_record, logs_analysis, get_version, training, hyperparameters, dataset_config
 from fastapi.responses import JSONResponse
 
 # create a backend server using FastAPI
@@ -34,6 +34,8 @@ app.include_router(logs_record.logs_system_router)
 app.include_router(logs_analysis.logs_analysis_router)
 app.include_router(get_version.get_version_router)
 app.include_router(training.training_router)
+app.include_router(hyperparameters.hyperparameters_router)
+app.include_router(dataset_config.dataset_config_router)
 
 # create folder for backend files if not exist, and mount static file serving
 os.makedirs(config.UPLOAD_DIR, exist_ok=True)

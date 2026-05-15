@@ -6,6 +6,14 @@ import evaluationData from "../../../backend/src/CNN/classification_report.json"
 import { saveLogs } from "../utils/savelog";
 import { getSystemVersion } from "../utils/get_system_version";
 import { useTraining } from "./TrainingContext";
+import { 
+  fetchHyperparameters, 
+  saveHyperparameters, 
+  hyperparamsToArray,
+  arrayToHyperparams,
+  augmentationToArray,
+  statisticsToArray 
+} from "./hyperparameters_handle";
 
 const summaryCards = evaluationData.summaryCards;
 
@@ -32,7 +40,8 @@ const architectureLayers = [
   { title: "Output", subtitle: "43 classes, Softmax", className: "layer-output" },
 ];
 
-const hyperparameters = [
+// Default values (will be overridden by backend data)
+const defaultHyperparameters = [
   ["Learning Rate", "0.001"],
   ["Batch Size", "32"],
   ["Epochs", "50"],
@@ -41,7 +50,7 @@ const hyperparameters = [
   ["Input Shape", "32×32×3"],
 ];
 
-const augmentation = [
+const defaultAugmentation = [
   ["Rotation", "+15°"],
   ["Width Shift", "10%"],
   ["Height Shift", "10%"],
@@ -50,7 +59,7 @@ const augmentation = [
   ["Preprocessing", "Normalize /255"],
 ];
 
-const statistics = [
+const defaultStatistics = [
   ["Total Parameters", "2.3M"],
   ["Trainable Params", "2.3M"],
   ["Model Size", "8.9 MB"],
@@ -61,9 +70,9 @@ const statistics = [
 
 const actionButtons = [
   { label: "Start Training", className: "primary" },
-  { label: "Upload Dataset", className: "secondary" },
-  { label: "Export Model (.h5)", className: "ghost" },
-  { label: "Show on GitHub", className: "ghost" },
+  // { label: "Upload Dataset", className: "secondary" },
+  // { label: "Export Model (.h5)", className: "ghost" },
+  // { label: "Show on GitHub", className: "ghost" },
 ];
 
 const DataScientistGUI_CNNarch = () => {
@@ -73,6 +82,17 @@ const DataScientistGUI_CNNarch = () => {
 
   {/* get system version from backend and display it */}
   const [systemVersion, setSystemVersion] = useState(null);
+
+  {/* State for hyperparameters, augmentation, statistics */}
+  const [hyperparameters, setHyperparameters] = useState(defaultHyperparameters);
+  const [augmentation, setAugmentation] = useState(defaultAugmentation);
+  const [statistics, setStatistics] = useState(defaultStatistics);
+
+  {/* State for edit mode */}
+  const [isEditingHyperparams, setIsEditingHyperparams] = useState(false);
+  const [editedHyperparams, setEditedHyperparams] = useState({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
 
   {/* Use training context for global state management */}
   const { 
@@ -93,6 +113,78 @@ const DataScientistGUI_CNNarch = () => {
     })();
     return () => { mounted = false; };
   }, []);
+
+  {/* Load hyperparameters from backend on mount */}
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const result = await fetchHyperparameters();
+      if (!mounted) return;
+      if (result.success && result.data) {
+        const { hyperparameters: hp, augmentation: aug, statistics: stats } = result.data;
+        if (hp) setHyperparameters(hyperparamsToArray(hp));
+        if (aug) setAugmentation(augmentationToArray(aug));
+        if (stats) setStatistics(statisticsToArray(stats));
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  {/* Handle edit mode toggle */}
+  const handleEditHyperparams = () => {
+    if (!isEditingHyperparams) {
+      // Enter edit mode - convert array to object for editing
+      const editObj = {};
+      hyperparameters.forEach(([label, value]) => {
+        editObj[label] = value;
+      });
+      setEditedHyperparams(editObj);
+    }
+    setIsEditingHyperparams(!isEditingHyperparams);
+    setSaveMessage("");
+  };
+
+  {/* Handle input change during editing */}
+  const handleHyperparamChange = (label, value) => {
+    setEditedHyperparams(prev => ({
+      ...prev,
+      [label]: value
+    }));
+  };
+
+  {/* Handle save hyperparameters */}
+  const handleSaveHyperparams = async () => {
+    setIsSaving(true);
+    setSaveMessage("");
+
+    const hyperparamsObj = arrayToHyperparams(
+      Object.entries(editedHyperparams).map(([label, value]) => [label, value])
+    );
+
+    const result = await saveHyperparameters(hyperparamsObj);
+    
+    if (result.success) {
+      // Update local state with saved values
+      const newHyperparams = Object.entries(editedHyperparams).map(([label, value]) => [label, value]);
+      setHyperparameters(newHyperparams);
+      setIsEditingHyperparams(false);
+      setSaveMessage("Saved successfully!");
+    } else {
+      setSaveMessage("Error saving: " + (result.error || "Unknown error"));
+    }
+    
+    setIsSaving(false);
+    
+    // Clear message after 3 seconds
+    setTimeout(() => setSaveMessage(""), 3000);
+  };
+
+  {/* Handle cancel editing */}
+  const handleCancelEdit = () => {
+    setIsEditingHyperparams(false);
+    setEditedHyperparams({});
+    setSaveMessage("");
+  };
 
   {/* Handle training button click */}
   const handleStartTraining = async () => {
@@ -226,13 +318,72 @@ const DataScientistGUI_CNNarch = () => {
                   </div>
 
                   <div className="cnn-info-grid">
-                    <article className="cnn-info-card">
-                      <div className="cnn-info-card-title">Hyperparameters</div>
+                    <article className="cnn-info-card cnn-info-card-editable">
+                      <div className="cnn-info-card-header">
+                        <div className="cnn-info-card-title">Hyperparameters</div>
+                        <div className="cnn-info-card-actions">
+                          {isEditingHyperparams ? (
+                            <>
+                              <button 
+                                type="button" 
+                                className="cnn-edit-btn cnn-save-btn"
+                                onClick={handleSaveHyperparams}
+                                disabled={isSaving}
+                              >
+                                {isSaving ? "Saving..." : "Save"}
+                              </button>
+                              <button 
+                                type="button" 
+                                className="cnn-edit-btn cnn-cancel-btn"
+                                onClick={handleCancelEdit}
+                                disabled={isSaving}
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <button 
+                              type="button" 
+                              className="cnn-edit-btn"
+                              onClick={handleEditHyperparams}
+                            >
+                              Edit
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {saveMessage && (
+                        <div className={`cnn-save-message ${saveMessage.includes("Error") ? "error" : "success"}`}>
+                          {saveMessage}
+                        </div>
+                      )}
                       <div className="cnn-spec-list">
                         {hyperparameters.map(([label, value]) => (
                           <div key={label} className="cnn-spec-row">
                             <span>{label}</span>
-                            <strong>{value}</strong>
+                            {isEditingHyperparams ? (
+                              label === "Optimizer" ? (
+                                <select
+                                  className="cnn-spec-select"
+                                  value={editedHyperparams[label] || "Adam"}
+                                  onChange={(e) => handleHyperparamChange(label, e.target.value)}
+                                >
+                                  <option value="Adam">Adam</option>
+                                  <option value="SGD">SGD</option>
+                                  <option value="RMSprop">RMSprop</option>
+                                  <option value="AdamW">AdamW</option>
+                                </select>
+                              ) : (
+                                <input
+                                  type="text"
+                                  className="cnn-spec-input"
+                                  value={editedHyperparams[label] || ""}
+                                  onChange={(e) => handleHyperparamChange(label, e.target.value)}
+                                />
+                              )
+                            ) : (
+                              <strong>{value}</strong>
+                            )}
                           </div>
                         ))}
                       </div>
