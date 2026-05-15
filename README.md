@@ -37,7 +37,7 @@ Default of backend server: http://localhost:5173
 1. Define PC as server then run local host
 2. Start server
     (cmd) backend
-    (cmd) uvicorn src.main:app --host 0.0.0.0 --port 8000
+    (cmd) uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 
 ### Run trial frontend ###
     (cmd) cd app

@@ -2,48 +2,24 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DataScientistGUI_Dataset.css";
 import DataScientistGUI_describe from "./DataScientistGUI_describe.json";
+import evaluationData from "../../../backend/src/CNN/classification_report.json";
 import { saveLogs } from "../utils/savelog";
 import { getSystemVersion } from "../utils/get_system_version";
+import { useTraining } from "./TrainingContext";
+import { fetchDatasetConfig, saveDatasetConfig, resetDatasetConfig, DEFAULT_DATASET_PATH } from "./dataset_handle";
+import classDistributionData from "../../../backend/src/CNN/class_distribution.json";
 
-const summaryCards = [
-  {
-    title: "Accuracy",
-    value: "94.3%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "A",
-    className: "accuracy",
-  },
-  {
-    title: "Precision",
-    value: "93.8%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "P",
-    className: "precision",
-  },
-  {
-    title: "Recall",
-    value: "94.1%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "R",
-    className: "recall",
-  },
-  {
-    title: "F1-Score",
-    value: "93.9%",
-    subtitle: "Model CNN v2.1 - Test set",
-    icon: "F",
-    className: "f1",
-  },
-];
+const summaryCards = evaluationData.summaryCards;
 
-const classDistribution = [
-  { label: "Speed 30", value: 2200, color: "#4f83ff" },
-  { label: "Right-of-Way", value: 1800, color: "#8b5cf6" },
-  { label: "Yield", value: 2100, color: "#ec4899" },
-  { label: "No", value: 1400, color: "#f97316" },
-  { label: "Vehicles", value: 1200, color: "#f59e0b" },
-  { label: "Other", value: 9100, color: "#10b981" },
-];
+// Colors for the chart bars
+const chartColors = ["#4f83ff", "#8b5cf6", "#ec4899", "#f97316", "#f59e0b", "#10b981", "#06b6d4", "#6366f1", "#84cc16", "#f43f5e", "#14b8a6", "#a855f7", "#22c55e", "#eab308", "#ef4444", "#3b82f6", "#d946ef", "#0ea5e9", "#f472b6", "#facc15"];
+
+// Get top 20 classes from class_distribution.json
+const classDistribution = classDistributionData.top_20_classes.slice(0, 20).map((item, index) => ({
+  label: item.class_name.length > 15 ? item.class_name.substring(0, 15) + "..." : item.class_name,
+  value: item.num_samples,
+  color: chartColors[index % chartColors.length],
+}));
 
 const datasetSpecs = [
   { label: "Train/Validation Split", value: "80% / 20%" },
@@ -51,15 +27,10 @@ const datasetSpecs = [
   { label: "Imbalanced Classes", value: "Have (10x ratio)" },
   { label: "Augmentation", value: "Rotation, Zoom, Shift" },
   { label: "Color Space", value: "RGB" },
-  { label: "Label Format", value: "One-hot (43 classes)" },
+  { label: "Label Format", value: `One-hot (${classDistributionData.total_classes} classes)` },
 ];
 
-const actionButtons = [
-  { label: "Start Training", className: "primary" },
-  { label: "Upload Dataset", className: "secondary" },
-  { label: "Export Model (.h5)", className: "ghost" },
-  { label: "Show on GitHub", className: "ghost" },
-];
+// Action buttons are now handled dynamically in the component
 
 const DataScientistGUI_Dataset = () => {
   const navItems = "menu_Dataset";
@@ -68,6 +39,17 @@ const DataScientistGUI_Dataset = () => {
 
   {/* get system version from backend and display it */}
   const [systemVersion, setSystemVersion] = useState(null);
+
+  {/* Use training context for global state management */}
+  const { trainingProgress, trainingStatus, trainingMessage } = useTraining();
+
+  {/* Dataset configuration state */}
+  const [datasetPath, setDatasetPath] = useState(DEFAULT_DATASET_PATH);
+  const [absolutePath, setAbsolutePath] = useState("");
+  const [isDefaultDataset, setIsDefaultDataset] = useState(true);
+  const [datasetLoading, setDatasetLoading] = useState(false);
+  const [datasetMessage, setDatasetMessage] = useState("");
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -77,6 +59,100 @@ const DataScientistGUI_Dataset = () => {
     })();
     return () => { mounted = false; };
   }, []);
+
+  {/* Load dataset configuration on mount */}
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const result = await fetchDatasetConfig();
+      if (!mounted) return;
+      if (result.success && result.data) {
+        setDatasetPath(result.data.data_dir || DEFAULT_DATASET_PATH);
+        setAbsolutePath(result.data.absolute_path || "");
+        setIsDefaultDataset(result.data.is_default ?? true);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  {/* Handle Upload Dataset button click - using File System Access API */}
+  const handleUploadDataset = async () => {
+    try {
+      // Check if File System Access API is supported
+      if ('showDirectoryPicker' in window) {
+        setDatasetLoading(true);
+        setDatasetMessage("Selecting folder...");
+        
+        const dirHandle = await window.showDirectoryPicker({
+          mode: 'read',
+        });
+        
+        // Get the folder name and construct relative path
+        const folderName = dirHandle.name;
+        const relativePath = `../../dataset/${folderName}`;
+        
+        setDatasetMessage("Saving dataset path...");
+        const result = await saveDatasetConfig(relativePath, false, folderName);
+        if (result.success) {
+          setDatasetPath(relativePath);
+          setAbsolutePath(result.data?.absolute_path || "");
+          setIsDefaultDataset(false);
+          setDatasetMessage(`Dataset selected: ${folderName}`);
+        } else {
+          setDatasetMessage("Failed to save dataset path.");
+        }
+      } else {
+        // Fallback for browsers that don't support showDirectoryPicker
+        const newPath = prompt("Enter the dataset folder name:", "Data");
+        if (newPath && newPath.trim() !== "") {
+          setDatasetLoading(true);
+          setDatasetMessage("Saving dataset path...");
+          const folderName = newPath.trim();
+          const relativePath = `../../dataset/${folderName}`;
+          const result = await saveDatasetConfig(relativePath, false, folderName);
+          if (result.success) {
+            setDatasetPath(relativePath);
+            setAbsolutePath(result.data?.absolute_path || "");
+            setIsDefaultDataset(false);
+            setDatasetMessage("Dataset path saved successfully!");
+          } else {
+            setDatasetMessage("Failed to save dataset path.");
+          }
+        }
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        setDatasetMessage("Folder selection cancelled.");
+      } else {
+        setDatasetMessage("Error: " + error.message);
+      }
+    } finally {
+      setDatasetLoading(false);
+      setTimeout(() => setDatasetMessage(""), 3000);
+    }
+  };
+
+  {/* Handle Default Dataset button click */}
+  const handleDefaultDataset = async () => {
+    setDatasetLoading(true);
+    setDatasetMessage("Resetting to default dataset...");
+    try {
+      const result = await resetDatasetConfig();
+      if (result.success) {
+        setDatasetPath(DEFAULT_DATASET_PATH);
+        setAbsolutePath(result.data?.absolute_path || "");
+        setIsDefaultDataset(true);
+        setDatasetMessage("Reset to default dataset path!");
+      } else {
+        setDatasetMessage("Failed to reset dataset path.");
+      }
+    } catch (error) {
+      setDatasetMessage("Error: " + error.message);
+    } finally {
+      setDatasetLoading(false);
+      setTimeout(() => setDatasetMessage(""), 3000);
+    }
+  };
 
   {/* items selected in navigation menu, default is "menu_Archive" */}
   const navigate = useNavigate();
@@ -158,37 +234,43 @@ const DataScientistGUI_Dataset = () => {
                 <div className="ds-panel-shell">
                   <div className="cnn-panel-grid">
                     <div className="cnn-panel-left">
-                      <h2 className="cnn-panel-title">Class Distribution (Top 10)</h2>
-                      <div className="class-chart-frame">
-                        <svg className="class-chart-svg" viewBox="0 0 560 260" preserveAspectRatio="none">
-                          {classDistribution.map((item, index) => {
-                            const y = 24 + index * 36;
-                            const barWidth = Math.max(52, (item.value / 10000) * 360);
+                      <h2 className="cnn-panel-title">Class Distribution (Top 20)</h2>
+                      <div className="class-chart-frame class-chart-frame-large">
+                        <svg className="class-chart-svg" viewBox="0 0 560 480" preserveAspectRatio="none">
+                          {(() => {
+                            const maxValue = Math.max(...classDistribution.map(item => item.value));
+                            const chartMax = Math.ceil(maxValue / 1000) * 1000; // Round up to nearest 1000
+                            const ticks = [0, chartMax * 0.25, chartMax * 0.5, chartMax * 0.75, chartMax];
                             return (
-                              <g key={item.label}>
-                                <text x="16" y={y + 14} className="class-chart-label">
-                                  {item.label}
-                                </text>
-                                <rect x="120" y={y} width="360" height="16" fill="#eef2ff" rx="5" />
-                                <rect x="120" y={y} width={barWidth} height="16" fill={item.color} rx="5" />
-                                <text x="112" y={y + 14} className="class-chart-axis">
-                                  {index === 0 ? "0" : ""}
-                                </text>
-                              </g>
+                              <>
+                                {classDistribution.map((item, index) => {
+                                  const y = 16 + index * 22;
+                                  const barWidth = Math.max(20, (item.value / chartMax) * 360);
+                                  return (
+                                    <g key={item.label + index}>
+                                      <text x="16" y={y + 12} className="class-chart-label">
+                                        {item.label}
+                                      </text>
+                                      <rect x="120" y={y} width="360" height="14" fill="#eef2ff" rx="4" />
+                                      <rect x="120" y={y} width={barWidth} height="14" fill={item.color} rx="4" />
+                                    </g>
+                                  );
+                                })}
+                                <line x1="120" y1="456" x2="480" y2="456" stroke="#cbd5e1" />
+                                {ticks.map((tick) => {
+                                  const x = 120 + (tick / chartMax) * 360;
+                                  return (
+                                    <g key={tick}>
+                                      <line x1={x} y1="456" x2={x} y2="462" stroke="#cbd5e1" />
+                                      <text x={x} y="476" textAnchor="middle" className="class-chart-tick">
+                                        {Math.round(tick)}
+                                      </text>
+                                    </g>
+                                  );
+                                })}
+                              </>
                             );
-                          })}
-                          <line x1="120" y1="220" x2="480" y2="220" stroke="#cbd5e1" />
-                          {[0, 2500, 5000, 7500, 10000].map((tick) => {
-                            const x = 120 + (tick / 10000) * 360;
-                            return (
-                              <g key={tick}>
-                                <line x1={x} y1="220" x2={x} y2="226" stroke="#cbd5e1" />
-                                <text x={x} y="242" textAnchor="middle" className="class-chart-tick">
-                                  {tick}
-                                </text>
-                              </g>
-                            );
-                          })}
+                          })()}
                         </svg>
                       </div>
                     </div>
@@ -215,29 +297,59 @@ const DataScientistGUI_Dataset = () => {
                   </div>
 
                   <div className="cnn-actions">
-                    {actionButtons.map((button) => (
-                      <button key={button.label} type="button" className={`cnn-action-btn ${button.className}`}>
-                        {button.label}
+                    {!isDefaultDataset && absolutePath && (
+                      <div className="dataset-path-info">
+                        <span className="dataset-path-label">Current Dataset Path:</span>
+                        <code className="dataset-path-value">{absolutePath}</code>
+                      </div>
+                    )}
+                    {datasetMessage && <div className="dataset-message">{datasetMessage}</div>}
+                    <div className="dataset-buttons">
+                      <button 
+                        type="button" 
+                        className="cnn-action-btn secondary"
+                        onClick={handleUploadDataset}
+                        disabled={datasetLoading}
+                      >
+                        {datasetLoading ? "Processing..." : "Upload Dataset"}
                       </button>
-                    ))}
+                      <button 
+                        type="button" 
+                        className="cnn-action-btn ghost"
+                        onClick={handleDefaultDataset}
+                        disabled={datasetLoading || isDefaultDataset}
+                      >
+                        Default Dataset
+                      </button>
+                    </div>
                   </div>
                 </div>
               </section>
 
               <footer className="ds-footer">
                 <div className="ds-footer-title">
-                  <strong>Model CNN v2.2 Training...</strong>
-                  <span>Epoch 45/50 - Val Acc: 93.4% - ETA: ~3 min</span>
+                  <strong>
+                    {trainingStatus === "running" ? "Model CNN Training..." : 
+                     trainingStatus === "completed" ? "Training Completed" :
+                     trainingStatus === "error" ? "Training Error" : "Model CNN v2.2"}
+                  </strong>
+                  <span>
+                    {trainingMessage || (trainingStatus === "idle" ? "Ready to train" : "")}
+                  </span>
                 </div>
 
                 <div className="ds-progress-block">
                   <div className="ds-progress-copy">
-                    <span>Progress: 90%</span>
+                    <span>Progress: {trainingProgress}%</span>
                   </div>
                   <div className="ds-progress-track" aria-hidden="true">
-                    <div className="ds-progress-fill" />
+                    <div className="ds-progress-fill" style={{ width: `${trainingProgress}%` }} />
                   </div>
-                  <div className="ds-progress-eta">~3 min remaining</div>
+                  <div className="ds-progress-eta">
+                    {trainingStatus === "running" ? "Training in progress..." : 
+                     trainingStatus === "completed" ? "Done!" : 
+                     trainingStatus === "error" ? "Failed" : "Waiting"}
+                  </div>
                 </div>
               </footer>
             </div>

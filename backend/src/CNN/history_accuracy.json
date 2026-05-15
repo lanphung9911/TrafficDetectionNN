@@ -1,0 +1,79 @@
+{
+  "data": [
+    {
+      "Epoch": 0,
+      "Train Accuracy": 0.8813250064849854,
+      "Val Accuracy": 0.873440146446228
+    },
+    {
+      "Epoch": 1,
+      "Train Accuracy": 0.8746999502182007,
+      "Val Accuracy": 0.8699186444282532
+    },
+    {
+      "Epoch": 2,
+      "Train Accuracy": 0.966124951839447,
+      "Val Accuracy": 0.9591132402420044
+    },
+    {
+      "Epoch": 3,
+      "Train Accuracy": 0.9811499714851379,
+      "Val Accuracy": 0.973388135433197
+    },
+    {
+      "Epoch": 4,
+      "Train Accuracy": 0.9816749691963196,
+      "Val Accuracy": 0.9735772013664246
+    },
+    {
+      "Epoch": 5,
+      "Train Accuracy": 0.9894999861717224,
+      "Val Accuracy": 0.9810691475868225
+    },
+    {
+      "Epoch": 6,
+      "Train Accuracy": 0.9904249906539917,
+      "Val Accuracy": 0.982794463634491
+    },
+    {
+      "Epoch": 7,
+      "Train Accuracy": 0.9939249753952026,
+      "Val Accuracy": 0.9868358373641968
+    },
+    {
+      "Epoch": 8,
+      "Train Accuracy": 0.9978249669075012,
+      "Val Accuracy": 0.9913499355316162
+    },
+    {
+      "Epoch": 9,
+      "Train Accuracy": 0.9998250007629395,
+      "Val Accuracy": 0.9948005080223083
+    },
+    {
+      "Epoch": 10,
+      "Train Accuracy": 0.9999749660491943,
+      "Val Accuracy": 0.9949895739555359
+    },
+    {
+      "Epoch": 11,
+      "Train Accuracy": 0.9999749660491943,
+      "Val Accuracy": 0.9950368404388428
+    },
+    {
+      "Epoch": 12,
+      "Train Accuracy": 1.0,
+      "Val Accuracy": 0.9951077103614807
+    },
+    {
+      "Epoch": 13,
+      "Train Accuracy": 1.0,
+      "Val Accuracy": 0.9951077103614807
+    },
+    {
+      "Epoch": 14,
+      "Train Accuracy": 1.0,
+      "Val Accuracy": 0.9951077103614807
+    }
+  ]
+}
