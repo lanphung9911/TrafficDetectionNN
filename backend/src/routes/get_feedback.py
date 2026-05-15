@@ -33,6 +33,7 @@ def submit_feedback(
     }
 
     # temporary solution: write each feedback to a separate file named by email_name, in the feedback folder
+    writefile.append_to_json(record, file_path)
     writefile.append_to_json(record, ATTACHMENT_FEEDBACK_FILE_PATH_JSON)
 
     # save attach file to folder
