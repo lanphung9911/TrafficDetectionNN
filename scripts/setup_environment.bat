@@ -71,13 +71,70 @@ echo.
 echo [2/6] Checking Node.js installation...
 where node >nul 2>&1
 if %ERRORLEVEL% neq 0 (
-    echo [WARNING] Node.js is not installed. Frontend setup will be skipped.
-    set "SKIP_NODE=1"
-) else (
+    echo [WARNING] Node.js is not installed.
+    echo.
+    set /p "INSTALL_NODE=Do you want to automatically install Node.js LTS? (Y/n): "
+    if /i "!INSTALL_NODE!"=="n" (
+        echo [SKIPPED] Node.js installation skipped. Frontend setup will be skipped.
+        set "SKIP_NODE=1"
+        goto :node_check_done
+    )
+
+    :: Try installing via winget
+    echo [INFO] Attempting to install Node.js LTS via winget...
+    where winget >nul 2>&1
+    if !ERRORLEVEL! equ 0 (
+        winget install OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements
+        if !ERRORLEVEL! equ 0 (
+            echo [OK] Node.js installed successfully via winget.
+            :: Refresh PATH so node is available in current session
+            for /f "tokens=*" %%p in ('where node 2^>nul') do set "NODE_PATH=%%p"
+            if "!NODE_PATH!"=="" (
+                echo [INFO] Please restart this script to continue with the updated PATH.
+                pause
+                exit /b 0
+            )
+        ) else (
+            echo [ERROR] winget installation failed.
+            goto :node_manual_install
+        )
+    ) else (
+        echo [WARNING] winget is not available on this system.
+        goto :node_manual_install
+    )
+    goto :node_installed
+
+    :node_manual_install
+    echo.
+    echo [INFO] Please install Node.js manually:
+    echo   - Official LTS: https://nodejs.org/en/download/
+    echo   - After installation, re-run this script.
+    echo.
+    set /p "CONTINUE_WITHOUT_NODE=Continue setup without Node.js? (y/N): "
+    if /i "!CONTINUE_WITHOUT_NODE!"=="y" (
+        set "SKIP_NODE=1"
+        goto :node_check_done
+    )
+    pause
+    exit /b 1
+
+    :node_installed
+    where node >nul 2>&1
+    if !ERRORLEVEL! neq 0 (
+        echo [WARNING] Node.js not detected in PATH after installation. Frontend setup will be skipped.
+        set "SKIP_NODE=1"
+        goto :node_check_done
+    )
+) 
+
+where node >nul 2>&1
+if %ERRORLEVEL% equ 0 (
     for /f "tokens=1 delims= " %%v in ('node --version 2^>^&1') do set "NODE_VERSION=%%v"
     echo [OK] Found Node.js !NODE_VERSION!
     set "SKIP_NODE=0"
 )
+
+:node_check_done
 
 :: ========== Create Python Virtual Environment ==========
 echo.
