@@ -2,28 +2,28 @@
   "summaryCards": [
     {
       "title": "Accuracy",
-      "value": "99.51078%",
+      "value": "99.51314%",
       "subtitle": "Model CNN v2.1 - Test set",
       "icon": "A",
       "className": "accuracy"
     },
     {
       "title": "Precision",
-      "value": "99.51120%",
+      "value": "99.51395%",
       "subtitle": "Model CNN v2.1 - Test set",
       "icon": "P",
       "className": "precision"
     },
     {
       "title": "Recall",
-      "value": "99.51078%",
+      "value": "99.51314%",
       "subtitle": "Model CNN v2.1 - Test set",
       "icon": "R",
       "className": "recall"
     },
     {
       "title": "F1-Score",
-      "value": "99.51059%",
+      "value": "99.51276%",
       "subtitle": "Model CNN v2.1 - Test set",
       "icon": "F",
       "className": "f1"
