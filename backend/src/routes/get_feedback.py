@@ -40,9 +40,7 @@ def submit_feedback(
     if attachFile:
         try:
             os.makedirs(FEEDBACK_ATTACHMENT_DIR, exist_ok=True)
-            file_name_prefix = os.path.split(attachFile.filename)[-1].split(".")[0]
-            file_extension = os.path.split(attachFile.filename)[-1].split(".")[-1]
-            attach_path = os.path.join(FEEDBACK_ATTACHMENT_DIR, f"{file_name_prefix}.{file_extension}".replace("\\", "/"))
+            attach_path = os.path.join(FEEDBACK_ATTACHMENT_DIR, attachFile.filename.replace("\\", "/"))
             with open(attach_path, "wb") as f:
                 f.write(attachFile.file.read())
         except Exception as e:
