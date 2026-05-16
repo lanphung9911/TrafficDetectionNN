@@ -1,5 +1,5 @@
-import os
-
+import os, torch
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -45,6 +45,10 @@ os.makedirs(config.FEEDBACK_DIR, exist_ok=True)
 os.makedirs(config.FEEDBACK_ATTACHMENT_DIR, exist_ok=True)
 os.makedirs(config.ANALYSISLOGS_DIR, exist_ok=True)
 os.makedirs(config.INPUT_USER_DIR, exist_ok=True)
+os.makedirs(config.DATASET_DIR, exist_ok=True)
+os.makedirs(config.MODEL_DIR, exist_ok=True)
+os.makedirs(config.MODEL_FASTER_RCNN_DIR, exist_ok=True)
+os.makedirs(config.CONFIG_DIR, exist_ok=True)
 app.mount(f"{config.UPLOAD_DIR}".replace(".", ""), StaticFiles(directory=config.UPLOAD_DIR), name="upload")
 app.mount(f"{config.OUTPUT_DIR}".replace(".", ""), StaticFiles(directory=config.OUTPUT_DIR), name="output_logs")
 app.mount(f"{config.ANALYSISLOGS_DIR}".replace(".", ""), StaticFiles(directory=config.ANALYSISLOGS_DIR), name="analysis_logs")
@@ -57,6 +61,7 @@ writefile.init_json_file(config.DATAREF_FILE_PATH_JSON)
 writefile.init_csv_file(config.DATAREF_FILE_PATH_CSV, headers=["img","title","description"])
 writefile.init_json_file(config.ATTACHMENT_FEEDBACK_FILE_PATH_JSON)
 writefile.init_json_file(config.VERSION_FILE_PATH)
+writefile.init_csv_file(config.DATASET_LABELS_CSV, headers=["ClassId","Name"])
 
 # define a route for the home page
 @app.get("/")

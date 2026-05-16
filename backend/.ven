@@ -13,3 +13,6 @@ ANALYSISLOGS_DIR=./analysis_logs
 LIST_FOLDER_DIR=/list-files
 AUTH_DIR=./auth_login
 INPUT_USER_DIR=./input_users
+DATASET_DIR=./dataset
+MODEL_DIR=./model
+CONFIG_DIR=./configs

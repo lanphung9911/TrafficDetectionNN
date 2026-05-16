@@ -44,3 +44,15 @@ def append_to_json(new_data, file_path):
 
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
+
+def overwrite_to_csv(new_data, file_path, headers):
+    file_path = file_path.replace("\\", "/")
+    init_csv_file(file_path, headers)
+    
+    with open(file_path, "w", encoding="utf-8", newline="") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=headers)
+        writer.writeheader()
+        if isinstance(new_data, list):
+            writer.writerows(new_data)
+        else:
+            writer.writerow(new_data)
