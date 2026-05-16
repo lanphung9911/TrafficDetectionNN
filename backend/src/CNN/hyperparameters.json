@@ -21,6 +21,6 @@
     "model_size": "1.09 MB",
     "conv_layers": 3,
     "dense_layers": 2,
-    "training_time": "~3.1 phút"
+    "training_time": "~3.1 minutes"
   }
 }
