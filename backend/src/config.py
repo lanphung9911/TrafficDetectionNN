@@ -29,7 +29,7 @@ FRONTEND_URLS = [u.strip() for u in os.getenv("FRONTEND_URLS", "http://localhost
 # define sub-folders
 FEEDBACK_ATTACHMENT_DIR = os.path.join(FEEDBACK_DIR, "attachments")
 MODEL_FASTER_RCNN_DIR = os.path.join(MODEL_DIR, "FasterRCNN")
-CNN_DIR = os.path.join(MODEL_DIR, "CNN_V2")
+CNN_DIR = os.path.join(MODEL_DIR, "CNN")
 
 # define file paths
 VERSION_FILE_PATH = os.path.join(ANALYSISLOGS_DIR, f"{SYSTEM_VERSION}.json")
