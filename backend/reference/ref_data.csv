@@ -1,18 +1,44 @@
 img;title;description
-1.png;STOP;Pls stop
-2.png;ATTENTION;Pls attention
-3.png;BUS-STOP;Bus stop area
-4.png;Curve;Curve ahead
-5.png;Side Road;Side road ahead
-6.png;Reverse Turn;Reverse turn ahead
-7.png;Land End;Land end ahead
-8.png;Merge;Merge ahead
-9.png;Cross Road;Cross road ahead
-10.png;Winding Road;Winding road ahead
-11.png;Sharp Left;Sharp left turn ahead
-12.png;Sharp Right;Sharp right turn ahead
-13.png;Left Curve;Left curve ahead
-14.png;Right Curve;Right curve ahead
-15.png;Traffic Signal;Traffic signal ahead
-16.png;One Direction;One direction ahead
-17.png;Bicycle Crossing;Bicycle crossing ahead
+0.png;Speed limit (20km/h);Max speed 20 km/h.
+1.png;Speed limit (30km/h);Max speed 30 km/h.
+2.png;Speed limit (50km/h);Max speed 50 km/h.
+3.png;Speed limit (60km/h);Max speed 60 km/h.
+4.png;Speed limit (70km/h);Max speed 70 km/h.
+5.png;Speed limit (80km/h);Max speed 80 km/h.
+6.png;End of speed limit (80km/h);Speed limit restriction ends.
+7.png;Speed limit (100km/h);Max speed 100 km/h.
+8.png;Speed limit (120km/h);Max speed 120 km/h.
+9.png;No passing;Overtaking is prohibited.
+10.png;No passing for vehicles over 3.5 metric tons;Heavy vehicles cannot overtake.
+11.png;Right-of-way at the next intersection;Prepare to yield at intersection.
+12.png;Priority road;You have priority at intersections.
+13.png;Yield;Give way to other vehicles.
+14.png;Stop;Full stop required.
+15.png;No vehicles;All vehicles prohibited.
+16.png;Vehicles over 3.5 metric tons prohibited;Heavy vehicles not allowed.
+17.png;No entry;Entry prohibited.
+18.png;General caution;Be alert to hazards ahead.
+19.png;Dangerous curve to the left;Sharp left curve ahead.
+20.png;Dangerous curve to the right;Sharp right curve ahead.
+21.png;Double curve;Multiple curves ahead.
+22.png;Bumpy road;Uneven road surface ahead.
+23.png;Slippery road;Road may be slippery.
+24.png;Road narrows on the right;Lane reduces on right side.
+25.png;Road work;Construction zone ahead.
+26.png;Traffic signals;Traffic lights ahead.
+27.png;Pedestrians;Pedestrian crossing area.
+28.png;Children crossing;School or children crossing zone.
+29.png;Bicycles crossing;Bicycle crossing ahead.
+30.png;Beware of ice/snow;Slippery due to ice or snow.
+31.png;Wild animals crossing;Animals may cross road.
+32.png;End of all speed and passing limits;All restrictions lifted.
+33.png;Turn right ahead;Right turn required ahead.
+34.png;Turn left ahead;Left turn required ahead.
+35.png;Ahead only;Straight movement only.
+36.png;Go straight or right;Straight or right allowed.
+37.png;Go straight or left;Straight or left allowed.
+38.png;Keep right;Stay on right side.
+39.png;Keep left;Stay on left side.
+40.png;Roundabout mandatory;Roundabout must be followed.
+41.png;End of no passing;Overtaking restriction ends.
+42.png;End of no passing by vehicles over 3.5 metric tons;Heavy vehicle overtaking restriction ends.
