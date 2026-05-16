@@ -6,6 +6,8 @@ import { img_assets } from "../assets";
 import { handleLogin } from "./login_handle";
 import { getSystemVersion } from "../utils/get_system_version";
 import { saveLogs } from "../utils/savelog";
+import { validatePassword, PASSWORD_HINT_TEXT } from "../utils/validate_password";
+import { validateEmailForRole, emailHintForRole } from "../utils/validate_email";
 
 export default function MainGUI() {
   const frames = Object.values(MainGUI_describe.Feature);
@@ -36,6 +38,16 @@ export default function MainGUI() {
     }
     if (!role) {
       setLoginError("Please select a role.");
+      return;
+    }
+    const emailError = validateEmailForRole(email, role);
+    if (emailError) {
+      setLoginError(emailError);
+      return;
+    }
+    const pwdError = validatePassword(pwd);
+    if (pwdError) {
+      setLoginError(pwdError);
       return;
     }
     try {
@@ -174,6 +186,19 @@ export default function MainGUI() {
                 }}
               />
             </div>
+            <div
+              className="MainGUI_Frame-Login_Frame-UserAccess_Frame-email_Hint"
+              style={{
+                fontSize: "11px",
+                color:
+                  role && email && validateEmailForRole(email, role)
+                    ? "#c0392b"
+                    : "#7a8699",
+                marginTop: "4px",
+              }}
+            >
+              {emailHintForRole(role)}
+            </div>
           </div>
 
           {/* PASSWORD */}
@@ -197,6 +222,16 @@ export default function MainGUI() {
                   background: "transparent",
                 }}
               />
+            </div>
+            <div
+              className="MainGUI_Frame-Login_Frame-UserAccess_Frame-pw_Hint"
+              style={{
+                fontSize: "11px",
+                color: pwd && validatePassword(pwd) ? "#c0392b" : "#7a8699",
+                marginTop: "4px",
+              }}
+            >
+              {PASSWORD_HINT_TEXT}
             </div>
           </div>
         </div>
