@@ -53,6 +53,7 @@ app.mount(f"{config.UPLOAD_DIR}".replace(".", ""), StaticFiles(directory=config.
 app.mount(f"{config.OUTPUT_DIR}".replace(".", ""), StaticFiles(directory=config.OUTPUT_DIR), name="output_logs")
 app.mount(f"{config.ANALYSISLOGS_DIR}".replace(".", ""), StaticFiles(directory=config.ANALYSISLOGS_DIR), name="analysis_logs")
 app.mount("/reference", StaticFiles(directory=config.REFDATA_DIR), name="reference")
+app.mount("/feedback_attachments", StaticFiles(directory=config.FEEDBACK_ATTACHMENT_DIR), name="feedback_attachments")
 
 # create empty json files if not exist
 writefile.init_json_file(config.AUTH_FILE_PATH)
