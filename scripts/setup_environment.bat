@@ -165,29 +165,94 @@ call backend\.venv\Scripts\activate.bat
 :: Upgrade pip first
 python -m pip install --upgrade pip
 
-:: Check if user wants CUDA support
+:: ========== Detect GPU and CUDA version ==========
 echo.
-echo Do you need CUDA/GPU support for PyTorch?
-set /p "CUDA_SUPPORT=(y/N): "
+echo [INFO] Detecting GPU...
+set "HAS_GPU=0"
+set "CUDA_MAJOR=0"
+set "CUDA_MINOR=0"
+set "DETECTED_CUDA="
+set "RECOMMENDED_WHL=cpu"
+set "RECOMMENDED_LABEL=CPU (no GPU detected)"
 
-if /i "!CUDA_SUPPORT!"=="y" goto :ask_cuda_ver
+where nvidia-smi >nul 2>&1
+if !ERRORLEVEL! equ 0 (
+    :: Get GPU name
+    for /f "tokens=*" %%g in ('nvidia-smi --query-gpu=name --format=csv^,noheader 2^>nul') do (
+        set "GPU_NAME=%%g"
+    )
+    :: Get CUDA version from nvidia-smi header line
+    for /f "tokens=9 delims= " %%c in ('nvidia-smi 2^>nul ^| findstr /C:"CUDA Version"') do (
+        set "DETECTED_CUDA=%%c"
+    )
+    if not "!GPU_NAME!"=="" set "HAS_GPU=1"
+)
+
+if "!HAS_GPU!"=="1" (
+    echo [OK] GPU detected: !GPU_NAME!
+    if not "!DETECTED_CUDA!"=="" (
+        echo [OK] Driver-supported CUDA version: !DETECTED_CUDA!
+        :: Parse major version
+        for /f "tokens=1 delims=." %%a in ("!DETECTED_CUDA!") do set "CUDA_MAJOR=%%a"
+        for /f "tokens=2 delims=." %%b in ("!DETECTED_CUDA!") do set "CUDA_MINOR=%%b"
+        :: Map CUDA version to PyTorch wheel
+        if !CUDA_MAJOR! equ 11 (
+            set "RECOMMENDED_WHL=cu118"
+            set "RECOMMENDED_LABEL=CUDA 11.8 ^(driver supports CUDA !DETECTED_CUDA!^)"
+        ) else if !CUDA_MAJOR! equ 12 (
+            if !CUDA_MINOR! lss 4 (
+                set "RECOMMENDED_WHL=cu121"
+                set "RECOMMENDED_LABEL=CUDA 12.1 ^(driver supports CUDA !DETECTED_CUDA!^)"
+            ) else if !CUDA_MINOR! lss 8 (
+                set "RECOMMENDED_WHL=cu124"
+                set "RECOMMENDED_LABEL=CUDA 12.4 ^(driver supports CUDA !DETECTED_CUDA!^)"
+            ) else (
+                set "RECOMMENDED_WHL=cu128"
+                set "RECOMMENDED_LABEL=CUDA 12.8 ^(driver supports CUDA !DETECTED_CUDA!^)"
+            )
+        ) else if !CUDA_MAJOR! gtr 12 (
+            set "RECOMMENDED_WHL=cu128"
+            set "RECOMMENDED_LABEL=CUDA 12.8 ^(driver supports CUDA !DETECTED_CUDA!^)"
+        )
+    ) else (
+        echo [WARNING] Could not determine CUDA version from nvidia-smi.
+    )
+) else (
+    echo [INFO] No NVIDIA GPU detected. Will install CPU-only PyTorch.
+)
+
+echo.
+echo [INFO] Recommended PyTorch build: !RECOMMENDED_LABEL!
+echo.
+echo PyTorch installation options:
+echo   1. Auto-select ^(!RECOMMENDED_LABEL!^)     [recommended]
+echo   2. CPU only
+echo   3. CUDA 11.8
+echo   4. CUDA 12.1
+echo   5. CUDA 12.4
+echo   6. CUDA 12.8
+set /p "TORCH_CHOICE=Enter choice [1-6, default=1]: "
+if "!TORCH_CHOICE!"=="" set "TORCH_CHOICE=1"
+
+if "!TORCH_CHOICE!"=="1" goto :torch_auto
+if "!TORCH_CHOICE!"=="2" goto :torch_cpu
+if "!TORCH_CHOICE!"=="3" goto :cuda_118
+if "!TORCH_CHOICE!"=="4" goto :cuda_121
+if "!TORCH_CHOICE!"=="5" goto :cuda_124
+if "!TORCH_CHOICE!"=="6" goto :cuda_128
+echo [INFO] Invalid choice. Using auto-select...
+
+:torch_auto
+if "!RECOMMENDED_WHL!"=="cpu" goto :torch_cpu
+if "!RECOMMENDED_WHL!"=="cu118" goto :cuda_118
+if "!RECOMMENDED_WHL!"=="cu121" goto :cuda_121
+if "!RECOMMENDED_WHL!"=="cu124" goto :cuda_124
+if "!RECOMMENDED_WHL!"=="cu128" goto :cuda_128
+goto :torch_cpu
+
+:torch_cpu
 echo [INFO] Installing PyTorch CPU version...
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-goto :torch_done
-
-:ask_cuda_ver
-echo.
-echo Select CUDA version:
-echo   1. CUDA 11.8
-echo   2. CUDA 12.1
-echo   3. CUDA 12.4
-set /p "CUDA_VER=Enter choice (1-3): "
-
-if "!CUDA_VER!"=="1" goto :cuda_118
-if "!CUDA_VER!"=="2" goto :cuda_121
-if "!CUDA_VER!"=="3" goto :cuda_124
-echo [INFO] Invalid choice. Installing PyTorch with CUDA 12.1 (default)...
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 goto :torch_done
 
 :cuda_118
@@ -203,6 +268,11 @@ goto :torch_done
 :cuda_124
 echo [INFO] Installing PyTorch with CUDA 12.4...
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+goto :torch_done
+
+:cuda_128
+echo [INFO] Installing PyTorch with CUDA 12.8...
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 goto :torch_done
 
 :torch_done
