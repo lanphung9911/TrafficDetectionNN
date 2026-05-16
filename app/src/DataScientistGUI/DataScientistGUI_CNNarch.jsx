@@ -390,7 +390,7 @@ const DataScientistGUI_CNNarch = () => {
                     </article>
 
                     <article className="cnn-info-card">
-                      <div className="cnn-info-card-title">Data Augmentation</div>
+                      <div className="cnn-info-card-title">Data Agumentation</div>
                       <div className="cnn-spec-list">
                         {augmentation.map(([label, value]) => (
                           <div key={label} className="cnn-spec-row">
