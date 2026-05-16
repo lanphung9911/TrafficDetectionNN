@@ -25,7 +25,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # try:
 # Use absolute path based on script location
 _script_dir = os.path.dirname(os.path.abspath(__file__))
-_model_path = os.path.join(_script_dir, '..', '..', 'model', 'CNN_V2', 'traffic_sign_recognition.pt')
+_model_path = os.path.join(_script_dir, '..', '..', 'model', 'CNN', 'traffic_sign_recognition.pt')
 model = torch.load(_model_path, map_location=device, weights_only=False)
 model.eval()
 # except Exception as e:
