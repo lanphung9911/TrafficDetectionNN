@@ -1,0 +1,13 @@
+model:
+  fasterRCNN:
+    file: model_weights_only.pth
+    num_classes: 2
+    input_min_size: 640
+    input_max_size: 1280
+    score_detect_threshold: 0.4
+    iou_detect_threshold: 0.3
+  CNN:
+    file: traffic_sign_recognition.pt
+    input_size: 32
+    score_classification_threshold: 0.1
+  

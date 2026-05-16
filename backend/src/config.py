@@ -21,10 +21,15 @@ FEEDBACK_DIR = os.getenv("FEEDBACK_DIR", "feedback")
 AUTH_USER_DIR = os.getenv("AUTH_USER_DIR", "auth_login")
 INPUT_USER_DIR = os.getenv("INPUT_USER_DIR", "input_users")
 ANALYSISLOGS_DIR = os.getenv("ANALYSISLOGS_DIR", "analysis_logs")
+DATASET_DIR = os.getenv("DATASET_DIR", "dataset")
+MODEL_DIR = os.getenv("MODEL_DIR", "model")
+CONFIG_DIR = os.getenv("CONFIG_DIR", "configs")
 FRONTEND_URLS = [u.strip() for u in os.getenv("FRONTEND_URLS", "http://localhost:5173").split(",") if u.strip()]
 
 # define sub-folders
 FEEDBACK_ATTACHMENT_DIR = os.path.join(FEEDBACK_DIR, "attachments")
+MODEL_FASTER_RCNN_DIR = os.path.join(MODEL_DIR, "FasterRCNN")
+CNN_DIR = os.path.join(MODEL_DIR, "CNN_V2")
 
 # define file paths
 VERSION_FILE_PATH = os.path.join(ANALYSISLOGS_DIR, f"{SYSTEM_VERSION}.json")
@@ -32,4 +37,6 @@ AUTH_FILE_PATH = os.path.join(AUTH_USER_DIR, "data.json")
 INPUT_FILE_PATH = os.path.join(INPUT_USER_DIR, "input.json")
 DATAREF_FILE_PATH_CSV = os.path.join(REFDATA_DIR, "ref_data.csv")
 DATAREF_FILE_PATH_JSON = os.path.join(REFDATA_DIR, "ref_data.json")
+DATASET_LABELS_CSV = os.path.join(DATASET_DIR, "labels.csv")
 ATTACHMENT_FEEDBACK_FILE_PATH_JSON = os.path.join(FEEDBACK_ATTACHMENT_DIR, "attachment_feedback.json")
+CONFIG_FILE_PATH_YAML = os.path.join(CONFIG_DIR, "config.yaml")

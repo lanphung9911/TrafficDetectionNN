@@ -12,23 +12,6 @@ const UserGUI_static = () => {
   const email = localStorage.getItem("loginEmail");
   const email_name = email ? email.split("@")[0] : "User";
 
-  // Helper function to call cleanup API
-  const callCleanup = async () => {
-    try {
-      await fetch(`${API_BASE_URL}${CLEANUP}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
-      });
-      console.log("Cleanup completed");
-    } catch (err) {
-      console.error("Error calling cleanup:", err);
-    }
-  };
-
-  // Cleanup on page load/refresh
-  useEffect(() => {
-    callCleanup();
-  }, []);
 
   {/* get system version from backend and display it */}
   const [systemVersion, setSystemVersion] = useState(null);
@@ -70,39 +53,6 @@ const UserGUI_static = () => {
   {/* on submit of folder source */}
   const [countofImgs, setcountofImgs] = useState(0);
   const [predictions, setPredictions] = useState([]); // Store prediction results for each image
-
-  // Calculate top 5 most common traffic signs from predictions
-  const top5TrafficSigns = useMemo(() => {
-    if (!predictions || predictions.length === 0) return [];
-
-    // Count occurrences of each class_id
-    const classCount = {};
-    predictions.forEach((pred) => {
-      const classId = pred.class_id;
-      const name = pred.name;
-      if (classCount[classId]) {
-        classCount[classId].count += 1;
-      } else {
-        classCount[classId] = { class_id: classId, name: name, count: 1 };
-      }
-    });
-
-    // Convert to array and sort by count descending
-    const sorted = Object.values(classCount).sort((a, b) => b.count - a.count);
-
-    // Take top 5
-    const top5 = sorted.slice(0, 5);
-
-    // Calculate total for percentage
-    const total = predictions.length;
-
-    // Add percentage
-    return top5.map((item) => ({
-      ...item,
-      percent: ((item.count / total) * 100).toFixed(1),
-    }));
-  }, [predictions]);
-
   const onFolderSubmit = async (event) => {
     const files = event.target.files;
     if (!folderInputRef.current) return;
@@ -131,7 +81,7 @@ const UserGUI_static = () => {
     const result = await handleFolderSelect(files);
 
     // Store predictions from backend response (from predictions_*.json)
-    if (result && result.predictions) {
+    if (result && result.predictions && result.predictions.length > 0) {
       setPredictions(result.predictions);
     }
 
@@ -146,6 +96,7 @@ const UserGUI_static = () => {
   const onNextImgClick = () => {
     if (currentImgIndex < countofImgs - 1) {
       setCurrentImgIndex(currentImgIndex + 1);
+      console.log(predictions[currentImgIndex]);
     }
   }
 
@@ -155,10 +106,7 @@ const UserGUI_static = () => {
     }
   }
 
-  const onResetClick = async () => {
-    // Call cleanup API to delete upload folder and prediction files
-    await callCleanup();
-    
+  const onResetClick = async () => {    
     setImages([]);
     setCurrentImgIndex(0);
     setFolderName("");
@@ -185,6 +133,29 @@ const UserGUI_static = () => {
   const onClickResetButton = () => {
     // Implement the logic to reset map marker here
   };
+
+  {/* Create a mapping of filename to prediction for easy lookup */}
+  const predMap = useMemo(() => {
+    const map = {};
+    predictions.forEach((p) => {
+      const file = p.org_img_path?.split("\\").pop();
+      map[file] = p;
+    });
+    return map;
+  }, [predictions]);
+
+  const imgPath = images[currentImgIndex];
+  const fileName = imgPath?.split("/").pop();
+  const pred = predMap[fileName];
+
+  const currentPred = predictions.filter((p) => {
+    const file = p.org_img_path?.split("\\").pop();
+    const imgFile = images[currentImgIndex]?.split("/").pop();
+    return file === imgFile;
+  });
+
+  {/* Calculate average confidence for current image's predictions */}
+  const calculateCurrImgConf = currentPred.reduce((acc, item) => acc + (item.confidence || 0), 0) / (currentPred.length || 1);
 
   return (
     <div className="CommonGUI_Frame">
@@ -289,68 +260,55 @@ const UserGUI_static = () => {
           <div className="content-area">
             {/* Top Row */}
             <div className="content-row">
-              {/* Camera Section */}
+              {/* Image Section */}
               <div className="card image-card">
                 <div className="image-display">
-                  {images[currentImgIndex] && (
+                  {images[currentImgIndex] ? (
                     <img
-                      src={`${API_BASE_URL}${images[currentImgIndex]}`}
-                      alt={`img-${currentImgIndex}`}
+                      src={`${API_BASE_URL}${imgPath}`}
+                      alt="org"
                     />
+                  ) : (
+                    <span className="map-display-txt">
+                      Loading image ...
+                    </span>
                   )}
-                  <div className="info-overlay top-overlay">
-                    <div className="info-row">
-                      <span className="info-label">TimeStamp</span>
-                      <span className="info-value">--</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="info-label">Lat</span>
-                      <span className="info-value">--</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="info-label">Long</span>
-                      <span className="info-value">--</span>
-                    </div>
-                    <div className="info-highlight">
-                      <div className="info-row">
-                        <span className="info-label">Traffic Sign</span>
-                        <span className="info-value">{predictions[currentImgIndex]?.name || '--'}</span>
-                      </div>
-                      <div className="info-row" style={{ marginTop: '4px' }}>
-                        <span className="info-label">Confidence</span>
-                        <span className="info-value" style={{ color: '#4ade80' }}>
-                          {predictions[currentImgIndex]?.confidence !== undefined ? `${predictions[currentImgIndex].confidence}%` : '--'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
 
               {/* Review Section */}
               <div className="card review-card">
                 <h2 className="card-title center-title large-title">Review</h2>
-                <p className="review-subtitle">The most 5 traffic sign detected:</p>
+                <p className="review-subtitle">Prediction from model</p>
                 <div className="progress-list">
-                {top5TrafficSigns.length > 0 ? (
-                  <>
-                    {top5TrafficSigns.map((item, index) => (
-                      <div className="progress-item" key={item.class_id}>
+                  {currentPred.length > 0 ? (
+                    currentPred.map((item, idx) => (
+                      <div className="progress-item" key={idx}>
                         <span className="progress-label">{item.name}</span>
+
                         <div className="progress-bar-container">
-                          <div className="progress-bar" style={{ width: `${item.percent}%` }}></div>
-                          <span className="progress-value">{item.count}</span>
+                          <div className="progress-bg">
+                            <div
+                              className="progress-bar"
+                              style={{ width: `${item.confidence * 100}%` }}
+                            />
+                          </div>
+                          <span className="progress-value">
+                            {(item.confidence * 100).toFixed(1)}%
+                          </span>
                         </div>
                       </div>
-                    ))}
-                  </>
-                ) : (
-                  <p style={{ color: '#999', fontSize: '12px', textAlign: 'center' }}>No predictions yet</p>
-                )}
+                    ))
+                  ) : (
+                    <p style={{ color: "#999", fontSize: "12px", textAlign: "center" }}>
+                      No prediction for this image
+                    </p>
+                  )}
+                </div>
                 <div className="stats-summary">
                   <div className="stat-row">
                     <span className="stat-label">Confidence:</span>
-                    <span className="stat-badge">{predictions[currentImgIndex]?.confidence !== undefined ? `${predictions[currentImgIndex].confidence}%` : '0%'}</span>
+                    <span className="stat-badge">{(calculateCurrImgConf * 100).toFixed(1)}%</span>
                   </div>
                 </div>
                 <div className="stats-summary">
@@ -358,7 +316,6 @@ const UserGUI_static = () => {
                     <span className="stat-label">Total:</span>
                     <span className="stat-badge">{countofImgs}</span>
                   </div>
-                </div>
                 </div>
               </div>
             </div>
@@ -368,25 +325,16 @@ const UserGUI_static = () => {
               {/* Map Section */}
               <div className="card map-card">
                 <div className="map-display">
-                  <span className="placeholder-text">Map with marker</span>
-                  <div className="info-overlay bottom-overlay">
-                    <div className="info-row">
-                      <span className="info-label">Lat</span>
-                      <span className="info-value">--</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="info-label">Long</span>
-                      <span className="info-value">--</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="info-label">Traffic Sign</span>
-                      <span className="info-value">--</span>
-                    </div>
-                    <div className="info-row">
-                      <span className="info-label">Confidence</span>
-                      <span className="info-value">--</span>
-                    </div>
-                  </div>
+                  {pred?.pred_img_path ? (
+                    <img
+                      src={`${API_BASE_URL}/${pred.pred_img_path.replace(/\\/g, "/")}`}
+                      alt="prediction"
+                    />
+                  ) : (
+                    <span className="map-display-txt">
+                      No prediction image available
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -394,16 +342,17 @@ const UserGUI_static = () => {
               <div className="card user-control-card">
                 <h2 className="card-title center-title large-title">User control</h2>
                 <div className="control-actions">
-                  <div className="action-item">
+                  {/* Temporarily reserved for future use, currently no action */}
+                  {/* <div className="action-item">
                     <button className="btn-control"
                       onClick={() => {
                         onClickResetButton();
                       }}
                     >
-                      <span className="reset-icon"> RESTART </span>
+                      <span className="reset-icon"> RESERVED </span>
                     </button>
-                    <p className="action-desc">Reset map marker for all traffic sign type</p>
-                  </div>
+                    <p className="action-desc">Reserved</p>
+                  </div> */}
                 </div>
               </div>
             </div>

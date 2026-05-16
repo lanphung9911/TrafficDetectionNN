@@ -7,6 +7,7 @@ export async function handleFolderSelect(files) {
   for (let i = 0; i < files.length; i++) {
     formDatas.append("files", files[i]);
     formDatas.append("paths", files[i].webkitRelativePath);
+    formDatas.append("root_path", files[0].webkitRelativePath.split("/")[0]);
   }
 
   const res = await fetch(`${baseUrl}/api/input/upload_folder`, {
