@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-load_dotenv(".ven")
+load_dotenv(".env")
 
 # host and port for the backend server
 HOST = os.getenv("HOST", "0.0.0.0")
