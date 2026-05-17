@@ -31,5 +31,9 @@ nbformat>=5.9.0
 nbclient>=0.9.0
 ipykernel>=6.29.0
 
+# Model Utilities
+torchsummary>=1.5.1
+imbalanced-learn>=0.12.0
+
 # Note: torch and torchvision are installed separately
 # based on CUDA configuration in setup_environment.bat
