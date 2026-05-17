@@ -96,6 +96,7 @@ const AdminGUI_monitoring = () => {
 
     try {
       await deleteUser(email);
+      window.location.reload();
       alert(`User ${email} deleted successfully.`); /* Alert on success */
     } 
     catch (err) {
