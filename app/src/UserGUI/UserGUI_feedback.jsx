@@ -169,41 +169,6 @@ const UserGUI_feedback = () => {
                 <span>{UserGUI_describe.Navi_Menu.menu_Feedback}</span>
               </button>
             </nav>
-
-            <div className="control-panel">
-              {/* Control settings */}
-              <div className="control-settings">
-              <div className="setting-row">
-                <span className="setting-label">{UserGUI_describe.Control_Panel.Title}</span>
-                <div className="setting-options">
-                  <button 
-                    className="option-btn" 
-                    onClick={() => onPreviousImgClick()}
-                    disabled={countofImgs === 0 || currentImgIndex === 0}
-                    style={{ opacity: countofImgs === 0 || currentImgIndex === 0 ? 0.5 : 1, cursor: countofImgs === 0 || currentImgIndex === 0 ? 'not-allowed' : 'pointer' }}
-                  >
-                    {UserGUI_describe.Control_Panel.Previous_Image}
-                  </button>
-                  <button 
-                    className="option-btn" 
-                    onClick={() => onNextImgClick()}
-                    disabled={countofImgs === 0 || currentImgIndex >= countofImgs - 1}
-                    style={{ opacity: countofImgs === 0 || currentImgIndex >= countofImgs - 1 ? 0.5 : 1, cursor: countofImgs === 0 || currentImgIndex >= countofImgs - 1 ? 'not-allowed' : 'pointer' }}
-                  >
-                    {UserGUI_describe.Control_Panel.Next_Image}
-                  </button>
-                  <button className="option-btn" onClick={() => onFeedbackClear()}>
-                    {UserGUI_describe.Control_Panel.reset}
-                  </button>
-                </div>
-              </div>
-              {countofImgs > 0 && (
-                <div style={{ marginTop: '10px', fontSize: '12px', color: '#666', textAlign: 'center' }}>
-                  Image {currentImgIndex + 1} / {countofImgs}
-                </div>
-              )}
-              </div>
-            </div>
           </aside>
 
           {/* Content Area */}
