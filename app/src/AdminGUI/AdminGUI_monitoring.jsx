@@ -96,6 +96,7 @@ const AdminGUI_monitoring = () => {
 
     try {
       await deleteUser(email);
+      window.location.reload();
       alert(`User ${email} deleted successfully.`); /* Alert on success */
     } 
     catch (err) {
@@ -146,6 +147,20 @@ const AdminGUI_monitoring = () => {
   const [auditPage, setAuditPage] = useState(0);
   const auditPageSize = 3;
   const auditTotalPages = Math.max(1, Math.ceil(auditLogs.length / auditPageSize));
+  const lastAuditTimeStamp_date = auditLogs.slice(-1)[0]?.time_stamp.split("T")[0] || [];
+  const lastAuditTimeStamp_time = auditLogs.slice(-1)[0]?.time_stamp.split("T")[1]?.split(".")[0] || [];
+  const lasAuditUser = auditLogs.slice(-1)[0]?.email_name || "N/A";
+  const lastAudit = lastAuditTimeStamp_date ? `${lastAuditTimeStamp_date} ${lastAuditTimeStamp_time} by ${lasAuditUser}` : "N/A";
+  let total_user = 0
+  let total_admin = 0
+  let total_ds = 0
+
+  for (const activeAcc of usersList) {
+    if (activeAcc["role"] === "Admin") total_admin += 1
+    else if (activeAcc["role"] === "User") total_user += 1
+    else if (activeAcc["role"] === "DataScientist") total_ds += 1
+    else {/* Do nothing */}
+  }
 
   const snapshots = [
     { label: AdminGUI_describe.Snapshot.Title_1, 
@@ -153,16 +168,16 @@ const AdminGUI_monitoring = () => {
       note: "stable release", 
       badgeClass: "snapshot-gray" },
     { label: AdminGUI_describe.Snapshot.Title_2, 
-      value: "thresholds.json", 
-      note: "last sync 08:00", 
+      value: ".pth", 
+      note: "detection & classification model", 
       badgeClass: "snapshot-cyan" },
     { label: AdminGUI_describe.Snapshot.Title_3, 
-      value: "12 users", 
-      note: "7 active today", 
+      value: usersList.length, 
+      note: `${total_user} user; ${total_admin} admin; ${total_ds} data scientist`, 
       badgeClass: "snapshot-violet" },
     { label: AdminGUI_describe.Snapshot.Title_4, 
-      value: "PDF + CSV", 
-      note: "2 scheduled", 
+      value: lastAudit, 
+      note: "lastupdate", 
       badgeClass: "snapshot-peach" },
   ];
 

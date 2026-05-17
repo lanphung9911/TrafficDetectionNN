@@ -91,7 +91,7 @@
 .cnn-architecture-scroll {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
   min-width: 0;
   overflow: hidden;
 }
@@ -99,7 +99,7 @@
 .cnn-architecture-track {
   display: flex;
   align-items: stretch;
-  gap: 10px;
+  gap: 5px;
   overflow-x: auto;
   overflow-y: hidden;
   width: 100%;
@@ -107,6 +107,14 @@
   scrollbar-width: thin;
   scrollbar-color: #94a3b8 #d1d9e6;
   min-height: 0;
+  align-items: stretch;
+}
+
+.cnn-architecture-section-title {
+  text-align: left;
+  font-size: 9px;
+  font-weight: 900;
+  color: #475569;
 }
 
 .cnn-architecture-track::-webkit-scrollbar {
@@ -129,7 +137,7 @@
 
 .cnn-layer-card {
   flex: 0 0 126px;
-  height: 54px;
+  height: 50px;
   padding: 10px 8px;
   border-radius: 8px;
   border: 1px solid #dbe6f3;
@@ -425,7 +433,3 @@
   border-color: #3b82f6;
   color: #ffffff;
 }
-
-/* .cnn-action-btn.ghost {
-  background: #f8fafc;
-} */

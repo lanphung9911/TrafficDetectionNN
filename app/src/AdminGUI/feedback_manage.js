@@ -17,6 +17,11 @@ const statusToClass = (status) => {
   return "pill-pending";
 };
 
+const buildAttachmentUrl = (apiBaseUrl, fileName) => {
+  if (!fileName) return null;
+  return `${apiBaseUrl}/feedback_attachments/${encodeURIComponent(fileName)}`;
+};
+
 export async function fetchAdminFeedback(apiBaseUrl, { includeArchived = false } = {}) {
   const res = await fetch(`${apiBaseUrl}/api/admin/feedback`);
   if (!res.ok) {
@@ -38,6 +43,8 @@ export async function fetchAdminFeedback(apiBaseUrl, { includeArchived = false }
     typeClass: typeClassMap[item.evaluateOption] || "pill-pink",
     attachment: item.attachFile || "no file",
     attachmentClass: item.attachFile ? "attachment-icon-active" : "attachment-icon-empty",
+    attachFile: item.attachFile || null,
+    attachmentUrl: buildAttachmentUrl(apiBaseUrl, item.attachFile),
     status: item.status,
     statusClass: statusToClass(item.status),
     featured: idx === 0,
@@ -70,6 +77,8 @@ export async function fetchArchiveFeedback(apiBaseUrl) {
     typeClass: typeClassMap[item.evaluateOption] || "pill-pink",
     attachment: item.attachFile || "no file",
     attachmentClass: item.attachFile ? "attachment-icon-active" : "attachment-icon-empty",
+    attachFile: item.attachFile || null,
+    attachmentUrl: buildAttachmentUrl(apiBaseUrl, item.attachFile),
     status: item.status,
     statusClass: statusToClass(item.status),
     featured: idx === 0,

@@ -51,7 +51,7 @@ const UserGUI_feedback = () => {
   }
 
   const [rating, setRating] = useState(5);
-  const [evaluateOption, setEvaluateOption] = useState(null);
+  const [evaluateOption, setEvaluateOption] = useState(UserGUI_describe.Evaluation.Content_1);
   const [attachFile, setAttachFile] = useState(null);
   const [feedbackText, setFeedbackText] = useState("");
   const fileInputRef = React.useRef(null);
@@ -77,8 +77,13 @@ const UserGUI_feedback = () => {
       });
       console.log("Feedback submitted:", result);
       onFeedbackClear();
+
+      alert("Feedback submitted successfully!");
+
+      window.location.reload(); // Refresh page
     } catch (e) {
       console.error("Submit failed:", e);
+      alert("Failed to submit feedback. Please try again later.");
     }
   };
 
@@ -89,6 +94,11 @@ const UserGUI_feedback = () => {
     setFeedbackText("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  const total_count = userFeedbackList ? userFeedbackList.length : 0;
+  const avg_confidence = userFeedbackList && userFeedbackList.length > 0
+    ? userFeedbackList.reduce((sum, item) => sum + (item.rating || 0), 0) / userFeedbackList.length
+    : 0;
 
   {/* fetch feedback data when component mounts */}
   useEffect(() => {
@@ -161,41 +171,6 @@ const UserGUI_feedback = () => {
                 <span>{UserGUI_describe.Navi_Menu.menu_Feedback}</span>
               </button>
             </nav>
-
-            <div className="control-panel">
-              {/* Control settings */}
-              <div className="control-settings">
-              <div className="setting-row">
-                <span className="setting-label">{UserGUI_describe.Control_Panel.Title}</span>
-                <div className="setting-options">
-                  <button 
-                    className="option-btn" 
-                    onClick={() => onPreviousImgClick()}
-                    disabled={countofImgs === 0 || currentImgIndex === 0}
-                    style={{ opacity: countofImgs === 0 || currentImgIndex === 0 ? 0.5 : 1, cursor: countofImgs === 0 || currentImgIndex === 0 ? 'not-allowed' : 'pointer' }}
-                  >
-                    {UserGUI_describe.Control_Panel.Previous_Image}
-                  </button>
-                  <button 
-                    className="option-btn" 
-                    onClick={() => onNextImgClick()}
-                    disabled={countofImgs === 0 || currentImgIndex >= countofImgs - 1}
-                    style={{ opacity: countofImgs === 0 || currentImgIndex >= countofImgs - 1 ? 0.5 : 1, cursor: countofImgs === 0 || currentImgIndex >= countofImgs - 1 ? 'not-allowed' : 'pointer' }}
-                  >
-                    {UserGUI_describe.Control_Panel.Next_Image}
-                  </button>
-                  <button className="option-btn" onClick={() => onFeedbackClear()}>
-                    {UserGUI_describe.Control_Panel.reset}
-                  </button>
-                </div>
-              </div>
-              {countofImgs > 0 && (
-                <div style={{ marginTop: '10px', fontSize: '12px', color: '#666', textAlign: 'center' }}>
-                  Image {currentImgIndex + 1} / {countofImgs}
-                </div>
-              )}
-              </div>
-            </div>
           </aside>
 
           {/* Content Area */}
@@ -206,7 +181,7 @@ const UserGUI_feedback = () => {
               <div className="card feedback-card">
                 <div className="fb-row-inline">
                   <span className="fb-label">{UserGUI_describe.Feedback.Feedback_Id}:</span>
-                  <span className="fb-user-id">1234567890</span>
+                  <span className="fb-user-id">{email_name}_{total_count+1}</span>
                 </div>
                 <span className="fb-label">{UserGUI_describe.Feedback.SubTitle_1}</span>
                 <textarea
@@ -240,11 +215,11 @@ const UserGUI_feedback = () => {
                   <div className="stats-summary">
                     <div className="stat-row">
                       <span className="stat-label">Rating:</span>
-                      <span className="stat-badge">{userFeedbackList.total_count}</span>
+                      <span className="stat-badge">{avg_confidence}%</span>
                     </div>
                     <div className="stat-row">
                       <span className="stat-label">Total feedback:</span>
-                      <span className="stat-badge">{userFeedbackList.confidence}%</span>
+                      <span className="stat-badge">{total_count}</span>
                     </div>
                   </div>
                 )}

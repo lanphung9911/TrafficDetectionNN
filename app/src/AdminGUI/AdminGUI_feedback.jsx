@@ -16,7 +16,23 @@ const AdminGUI_feedback = () => {
   const navigate = useNavigate();
 
   const [feedbackItems, setFeedbackItems] = useState([]);
-  const [selectedFeedback, setSelectedFeedback] = useState(null); 
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [previewAttachment, setPreviewAttachment] = useState(null); // { url, name } | null
+
+  const onAttachmentClick = (e, item) => {
+    e.stopPropagation();
+    if (!item?.attachmentUrl) return;
+    setPreviewAttachment({ url: item.attachmentUrl, name: item.attachment });
+  };
+
+  const closeAttachmentPreview = () => setPreviewAttachment(null);
+
+  useEffect(() => {
+    if (!previewAttachment) return;
+    const onKey = (e) => { if (e.key === "Escape") closeAttachmentPreview(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [previewAttachment]);
   
   {/* get system version from backend and display it */}
   const [systemVersion, setSystemVersion] = useState(null);
@@ -191,6 +207,15 @@ const AdminGUI_feedback = () => {
     });
   };
 
+  let avg_rating = 0;
+  let total_rating = 0;
+  let count_rating = 0;
+  for (const item of feedbackItems) {
+    total_rating += item['rating'] || 0;
+    count_rating += item['rating'] ? 1 : 0;
+  }
+  avg_rating = count_rating > 0 ? total_rating / count_rating : 0;
+
   return (
     <div className="CommonGUI_Frame">
       <div className="dashboard-wrapper">
@@ -269,10 +294,22 @@ const AdminGUI_feedback = () => {
 
                     <div className={`pill type-pill ${item.typeClass}`}>{item.type}</div>
 
-                    <div className="attachment-cell">
-                      <span className={`attachment-icon ${item.attachmentClass}`}>{paperclipIcon}</span>
-                      <span className="attachment-name">{item.attachment}</span>
-                    </div>
+                    {item.attachmentUrl ? (
+                      <button
+                        type="button"
+                        className="attachment-cell attachment-cell-clickable"
+                        onClick={(e) => onAttachmentClick(e, item)}
+                        title="Click to preview attachment"
+                      >
+                        <span className={`attachment-icon ${item.attachmentClass}`}>{paperclipIcon}</span>
+                        <span className="attachment-name">{item.attachment}</span>
+                      </button>
+                    ) : (
+                      <div className="attachment-cell">
+                        <span className={`attachment-icon ${item.attachmentClass}`}>{paperclipIcon}</span>
+                        <span className="attachment-name">{item.attachment}</span>
+                      </div>
+                    )}
 
                     <div className={`pill status-pill ${item.statusClass}`}>{item.status}</div>
 
@@ -300,11 +337,11 @@ const AdminGUI_feedback = () => {
                 <div className="metrics-grid">
                   <div className="metric-card metric-green">
                     <span className="metric-label">{AdminGUI_describe.Metric_label.metric_1}</span>
-                    <span className="metric-value">8.3</span>
+                    <span className="metric-value">{avg_rating.toFixed(1)}</span>
                   </div>
                   <div className="metric-card metric-blue">
                     <span className="metric-label">{AdminGUI_describe.Metric_label.metric_2}</span>
-                    <span className="metric-value">143</span>
+                    <span className="metric-value">{feedbackItems.length}</span>
                   </div>
                 </div>
               </section>
@@ -353,6 +390,57 @@ const AdminGUI_feedback = () => {
           </div>
         </div>
       </div>
+
+      {previewAttachment && (
+        <div
+          className="attachment-modal-overlay"
+          onClick={closeAttachmentPreview}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="attachment-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="attachment-modal-header">
+              <span className="attachment-modal-title">{previewAttachment.name}</span>
+              <button
+                type="button"
+                className="attachment-modal-close"
+                onClick={closeAttachmentPreview}
+                aria-label="Close preview"
+              >
+                ×
+              </button>
+            </div>
+            <div className="attachment-modal-body">
+              <img
+                className="attachment-modal-image"
+                src={previewAttachment.url}
+                alt={previewAttachment.name}
+                onError={(e) => {
+                  e.currentTarget.replaceWith(
+                    Object.assign(document.createElement("p"), {
+                      className: "attachment-modal-error",
+                      textContent: "Cannot load attachment.",
+                    })
+                  );
+                }}
+              />
+            </div>
+            <div className="attachment-modal-footer">
+              <a
+                className="attachment-modal-open"
+                href={previewAttachment.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open in new tab
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

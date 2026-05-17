@@ -1,87 +1,217 @@
 [
     {
+        "img": "0.png",
+        "title": "Speed limit (20km/h)",
+        "description": "Max speed 20 km/h."
+    },
+    {
         "img": "1.png",
-        "title": "STOP",
-        "description": "Pls stop"
+        "title": "Speed limit (30km/h)",
+        "description": "Max speed 30 km/h."
     },
     {
         "img": "2.png",
-        "title": "ATTENTION",
-        "description": "Pls attention"
+        "title": "Speed limit (50km/h)",
+        "description": "Max speed 50 km/h."
     },
     {
         "img": "3.png",
-        "title": "BUS-STOP",
-        "description": "Bus stop area"
+        "title": "Speed limit (60km/h)",
+        "description": "Max speed 60 km/h."
     },
     {
         "img": "4.png",
-        "title": "Curve",
-        "description": "Curve ahead"
+        "title": "Speed limit (70km/h)",
+        "description": "Max speed 70 km/h."
     },
     {
         "img": "5.png",
-        "title": "Side Road",
-        "description": "Side road ahead"
+        "title": "Speed limit (80km/h)",
+        "description": "Max speed 80 km/h."
     },
     {
         "img": "6.png",
-        "title": "Reverse Turn",
-        "description": "Reverse turn ahead"
+        "title": "End of speed limit (80km/h)",
+        "description": "Speed limit restriction ends."
     },
     {
         "img": "7.png",
-        "title": "Land End",
-        "description": "Land end ahead"
+        "title": "Speed limit (100km/h)",
+        "description": "Max speed 100 km/h."
     },
     {
         "img": "8.png",
-        "title": "Merge",
-        "description": "Merge ahead"
+        "title": "Speed limit (120km/h)",
+        "description": "Max speed 120 km/h."
     },
     {
         "img": "9.png",
-        "title": "Cross Road",
-        "description": "Cross road ahead"
+        "title": "No passing",
+        "description": "Overtaking is prohibited."
     },
     {
         "img": "10.png",
-        "title": "Winding Road",
-        "description": "Winding road ahead"
+        "title": "No passing for vehicles over 3.5 metric tons",
+        "description": "Heavy vehicles cannot overtake."
     },
     {
         "img": "11.png",
-        "title": "Sharp Left",
-        "description": "Sharp left turn ahead"
+        "title": "Right-of-way at the next intersection",
+        "description": "Prepare to yield at intersection."
     },
     {
         "img": "12.png",
-        "title": "Sharp Right",
-        "description": "Sharp right turn ahead"
+        "title": "Priority road",
+        "description": "You have priority at intersections."
     },
     {
         "img": "13.png",
-        "title": "Left Curve",
-        "description": "Left curve ahead"
+        "title": "Yield",
+        "description": "Give way to other vehicles."
     },
     {
         "img": "14.png",
-        "title": "Right Curve",
-        "description": "Right curve ahead"
+        "title": "Stop",
+        "description": "Full stop required."
     },
     {
         "img": "15.png",
-        "title": "Traffic Signal",
-        "description": "Traffic signal ahead"
+        "title": "No vehicles",
+        "description": "All vehicles prohibited."
     },
     {
         "img": "16.png",
-        "title": "One Direction",
-        "description": "One direction ahead"
+        "title": "Vehicles over 3.5 metric tons prohibited",
+        "description": "Heavy vehicles not allowed."
     },
     {
         "img": "17.png",
-        "title": "Bicycle Crossing",
-        "description": "Bicycle crossing ahead"
+        "title": "No entry",
+        "description": "Entry prohibited."
+    },
+    {
+        "img": "18.png",
+        "title": "General caution",
+        "description": "Be alert to hazards ahead."
+    },
+    {
+        "img": "19.png",
+        "title": "Dangerous curve to the left",
+        "description": "Sharp left curve ahead."
+    },
+    {
+        "img": "20.png",
+        "title": "Dangerous curve to the right",
+        "description": "Sharp right curve ahead."
+    },
+    {
+        "img": "21.png",
+        "title": "Double curve",
+        "description": "Multiple curves ahead."
+    },
+    {
+        "img": "22.png",
+        "title": "Bumpy road",
+        "description": "Uneven road surface ahead."
+    },
+    {
+        "img": "23.png",
+        "title": "Slippery road",
+        "description": "Road may be slippery."
+    },
+    {
+        "img": "24.png",
+        "title": "Road narrows on the right",
+        "description": "Lane reduces on right side."
+    },
+    {
+        "img": "25.png",
+        "title": "Road work",
+        "description": "Construction zone ahead."
+    },
+    {
+        "img": "26.png",
+        "title": "Traffic signals",
+        "description": "Traffic lights ahead."
+    },
+    {
+        "img": "27.png",
+        "title": "Pedestrians",
+        "description": "Pedestrian crossing area."
+    },
+    {
+        "img": "28.png",
+        "title": "Children crossing",
+        "description": "School or children crossing zone."
+    },
+    {
+        "img": "29.png",
+        "title": "Bicycles crossing",
+        "description": "Bicycle crossing ahead."
+    },
+    {
+        "img": "30.png",
+        "title": "Beware of ice/snow",
+        "description": "Slippery due to ice or snow."
+    },
+    {
+        "img": "31.png",
+        "title": "Wild animals crossing",
+        "description": "Animals may cross road."
+    },
+    {
+        "img": "32.png",
+        "title": "End of all speed and passing limits",
+        "description": "All restrictions lifted."
+    },
+    {
+        "img": "33.png",
+        "title": "Turn right ahead",
+        "description": "Right turn required ahead."
+    },
+    {
+        "img": "34.png",
+        "title": "Turn left ahead",
+        "description": "Left turn required ahead."
+    },
+    {
+        "img": "35.png",
+        "title": "Ahead only",
+        "description": "Straight movement only."
+    },
+    {
+        "img": "36.png",
+        "title": "Go straight or right",
+        "description": "Straight or right allowed."
+    },
+    {
+        "img": "37.png",
+        "title": "Go straight or left",
+        "description": "Straight or left allowed."
+    },
+    {
+        "img": "38.png",
+        "title": "Keep right",
+        "description": "Stay on right side."
+    },
+    {
+        "img": "39.png",
+        "title": "Keep left",
+        "description": "Stay on left side."
+    },
+    {
+        "img": "40.png",
+        "title": "Roundabout mandatory",
+        "description": "Roundabout must be followed."
+    },
+    {
+        "img": "41.png",
+        "title": "End of no passing",
+        "description": "Overtaking restriction ends."
+    },
+    {
+        "img": "42.png",
+        "title": "End of no passing by vehicles over 3.5 metric tons",
+        "description": "Heavy vehicle overtaking restriction ends."
     }
 ]

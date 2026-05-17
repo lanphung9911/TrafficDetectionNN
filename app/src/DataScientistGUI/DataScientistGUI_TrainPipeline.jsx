@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./DataScientistGUI_CNNarch.css";
+import "./DataScientistGUI_TrainPipeline.css";
 import DataScientistGUI_describe from "./DataScientistGUI_describe.json";
 import evaluationData from "../../../backend/src/CNN/classification_report.json";
 import { saveLogs } from "../utils/savelog";
@@ -25,7 +25,7 @@ const architectureLegend = [
   { label: "Output", className: "legend-output" },
 ];
 
-const architectureLayers = [
+const architectureLayers_CNN = [
   { title: "Input", subtitle: "32×32×3", className: "layer-input" },
   { title: "Conv2D", subtitle: "32 filters, 3×3, ReLU", className: "layer-conv" },
   { title: "Conv2D", subtitle: "32 filters, 3×3, ReLU", className: "layer-conv" },
@@ -37,7 +37,22 @@ const architectureLayers = [
   { title: "Dropout", subtitle: "rate=0.25", className: "layer-dropout" },
   { title: "Dense", subtitle: "128 units, ReLU", className: "layer-dense" },
   { title: "Dense", subtitle: "64 units, ReLU", className: "layer-dense" },
-  { title: "Output", subtitle: "43 classes, Softmax", className: "layer-output" },
+  { title: "Final Output", subtitle: "43 classes, Softmax", className: "layer-output" },
+];
+
+const architectureLayers_FasterRCNN = [
+  { title: "Input", subtitle: "RGB Image", className: "layer-input" },
+  { title: "Transform", subtitle: "Resize + Normalize", className: "layer-transform" },
+  { title: "ResNet50 Backbone", subtitle: "Feature Extraction", className: "layer-backbone" },
+  { title: "FPN", subtitle: "Multi-scale Feature Pyramid", className: "layer-fpn" },
+  { title: "Anchor Generator", subtitle: "8,16,32,64,128", className: "layer-anchor" },
+  { title: "RPN", subtitle: "Region Proposal Network", className: "layer-rpn" },
+  { title: "RoI Align", subtitle: "Feature Crop & Pooling", className: "layer-roi" },
+  { title: "Box Head", subtitle: "Fully Connected Layers", className: "layer-head" },
+  { title: "Box Predictor", subtitle: "Class + Bounding Box", className: "layer-predictor" },
+  { title: "Detection Output", subtitle: "Traffic Sign Bounding Boxes", className: "layer-output" }
+  // { title: "CNN Classifier", subtitle: "43 Traffic Sign Classes", className: "layer-classifier" },
+  // { title: "Final Output", subtitle: "2 classes, Softmax", className: "layer-final" },
 ];
 
 // Default values (will be overridden by backend data)
@@ -69,14 +84,14 @@ const defaultStatistics = [
 ];
 
 const actionButtons = [
-  { label: "Start Training", className: "primary" },
+  { label: "Start train CNN model (default FasterRCNN model will update per version instead of retrain)", className: "primary" },
   // { label: "Upload Dataset", className: "secondary" },
   // { label: "Export Model (.h5)", className: "ghost" },
   // { label: "Show on GitHub", className: "ghost" },
 ];
 
-const DataScientistGUI_CNNarch = () => {
-  const navItems = "menu_CNNarch";
+const DataScientistGUI_TrainPipeline = () => {
+  const navItems = "menu_trainpipeline";
   const email = localStorage.getItem("loginEmail");
   const email_name = email ? email.split("@")[0] : "Data Scientist";
 
@@ -214,7 +229,7 @@ const DataScientistGUI_CNNarch = () => {
       navigate("/DataScientistGUI_history", "_blank");
     } else if (item === "menu_Evaluation") {
       navigate("/DataScientistGUI_evaluation", "_blank");
-    } else if (item === "menu_CNNarch") {
+    } else if (item === "menu_trainpipeline") {
       /* Do nothing */
     } else if (item === "menu_Dataset") {
       navigate("/DataScientistGUI_dataset", "_blank");
@@ -257,9 +272,9 @@ const DataScientistGUI_CNNarch = () => {
                 <div className="nav-icon"></div>
                 <span>{DataScientistGUI_describe.Navi_Menu.menu_Evaluation}</span>
               </button>
-              <button className={`nav-item ${navItems === "menu_CNNarch" ? "active" : ""}`}>
+              <button className={`nav-item ${navItems === "menu_trainpipeline" ? "active" : ""}`}>
                 <div className="nav-icon"></div>
-                <span>{DataScientistGUI_describe.Navi_Menu.menu_CNNarch}</span>
+                <span>{DataScientistGUI_describe.Navi_Menu.menu_trainpipeline}</span>
               </button>
               <button className="nav-item" onClick={() => onNavItemClick("menu_Dataset")}>
                 <div className="nav-icon"></div>
@@ -286,7 +301,7 @@ const DataScientistGUI_CNNarch = () => {
               <section className="ds-panel">
                 <div className="ds-panel-shell">
                   <div className="cnn-panel-head">
-                    <h2 className="cnn-panel-title">CNN architecture</h2>
+                    <h2 className="cnn-panel-title">Pipeline 2 stage FasterRCNN-ResNet50 (detection) & CNN (classification)</h2>
                     <div className="cnn-legend">
                       {architectureLegend.map((item) => (
                         <span key={item.label} className={`cnn-legend-pill ${item.className}`}>
@@ -297,14 +312,37 @@ const DataScientistGUI_CNNarch = () => {
                   </div>
 
                   <div className="cnn-architecture-scroll">
+                    <span className="cnn-architecture-section-title">Faster R-CNN Detection Pipeline</span>
                     <div className="cnn-architecture-track">
-                      {architectureLayers.map((layer, index) => (
+                      {architectureLayers_FasterRCNN.map((layer, index) => (
                         <React.Fragment key={`${layer.title}-${index}`}>
                           <article className={`cnn-layer-card ${layer.className}`}>
                             <strong>{layer.title}</strong>
                             <span>{layer.subtitle}</span>
                           </article>
-                          {index < architectureLayers.length - 1 && (
+                          {index < architectureLayers_FasterRCNN.length - 1 && (
+                            <div className="cnn-layer-arrow" aria-hidden="true">
+                              ›
+                            </div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    <div className="cnn-scrollbar" aria-hidden="true">
+                      <span />
+                    </div>
+                  </div>
+
+                  <div className="cnn-architecture-scroll">
+                    <span className="cnn-architecture-section-title">CNN Classification Pipeline</span>
+                    <div className="cnn-architecture-track">
+                      {architectureLayers_CNN.map((layer, index) => (
+                        <React.Fragment key={`${layer.title}-${index}`}>
+                          <article className={`cnn-layer-card ${layer.className}`}>
+                            <strong>{layer.title}</strong>
+                            <span>{layer.subtitle}</span>
+                          </article>
+                          {index < architectureLayers_CNN.length - 1 && (
                             <div className="cnn-layer-arrow" aria-hidden="true">
                               ›
                             </div>
@@ -464,4 +502,4 @@ const DataScientistGUI_CNNarch = () => {
   );
 };
 
-export default DataScientistGUI_CNNarch;
+export default DataScientistGUI_TrainPipeline;

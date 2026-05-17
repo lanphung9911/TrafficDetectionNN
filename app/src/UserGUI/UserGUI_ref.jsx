@@ -179,7 +179,7 @@ const UserGUI_reference = () => {
                     {item.img ? (
                       <img
                         className="reference-thumb"
-                        src={normalizeImageSrc(item.img)}
+                        src={`${normalizeImageSrc(item.img)}?t=${Date.now()}`}
                         alt={item.title || `ref-${startIndex + index + 1}`}
                       />
                     ) : (

@@ -161,8 +161,8 @@ const DataScientistGUI_Dataset = () => {
       navigate("/DataScientistGUI_history", "_blank");
     } else if (item === "menu_Evaluation") {
       navigate("/DataScientistGUI_evaluation", "_blank");
-    } else if (item === "menu_CNNarch") {
-      navigate("/DataScientistGUI_CNNarch", "_blank");
+    } else if (item === "menu_trainpipeline") {
+      navigate("/DataScientistGUI_TrainPipeline", "_blank");
     } else if (item === "menu_Dataset") {
       /* Do nothing */
     } else {
@@ -204,9 +204,9 @@ const DataScientistGUI_Dataset = () => {
                 <div className="nav-icon"></div>
                 <span>{DataScientistGUI_describe.Navi_Menu.menu_Evaluation}</span>
               </button>
-              <button className="nav-item" onClick={() => onNavItemClick("menu_CNNarch")}>
+              <button className="nav-item" onClick={() => onNavItemClick("menu_trainpipeline")}>
                 <div className="nav-icon"></div>
-                <span>{DataScientistGUI_describe.Navi_Menu.menu_CNNarch}</span>
+                <span>{DataScientistGUI_describe.Navi_Menu.menu_trainpipeline}</span>
               </button>
               <button className={`nav-item ${navItems === "menu_Dataset" ? "active" : ""}`}>
                 <div className="nav-icon"></div>

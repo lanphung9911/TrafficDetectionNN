@@ -1,16 +1,16 @@
 {
     "Title": "Traffic Sign System",
     "Version": "Version: v1.0",
-    "ShortDescription": "An end-to-end system that uses computer vision and deep learning to automatically detect traffic signs from images and videos, map their locations, and build a dynamic inventory. \n\nBy visualizing results on an interactive map and providing analytics, it supports smart city management and intelligent transportation systems.",
+    "ShortDescription": "An end-to-end system that uses computer vision and deep learning to automatically detect traffic signs from images (for fiest baseline model). System able to detect 43 different classes of traffic signs with an accuracy over 80%.",
     "WhatHot":
     {
-        "text_1": "WHAT'S NEW",
-        "text_2": "Coming new model"
+        "text_1": "WHAT'S HOT",
+        "text_2": "FasterRCNN - CNN"
     },
     "WhatNew":
     {
-        "text_1": "WHAT'S HOT",
-        "text_2": "Accuracy: 80%"
+        "text_1": "WHAT'S NEW",
+        "text_2": "2-stage model"
     },
     "Feature":
     {
@@ -37,9 +37,9 @@
     },
     "Contact":
     {
-        "Email": "Email: roadisgn_demo@hcmut.edu.vn",
-        "GitHub": "GitHub: TBU",
-        "LinkedIn": "LinkedIn: TBU"
+        "Email": "Emai (@hcmut.edu.vn): lan.phung99, dat.tranngoc09112000, trieu.huynh2301",
+        "GitHub": "GitHub: https://github.com/lanphung9911/TrafficDetectionNN",
+        "Zalo": "Zalo (optional): 0355569622, 0798277276, 0964643578"
     },
     "Role":
     {

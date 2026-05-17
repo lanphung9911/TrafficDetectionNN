@@ -187,6 +187,14 @@ const AdminGUI_archive = () => {
     });
   };
 
+  let close_fb = 0;
+  let spam_fb = 0;
+
+  for (const item of feedbackItems) {
+    close_fb += item['status'] === "close" ? 1 : 0;
+    spam_fb += item['status'] === "spam" ? 1 : 0;
+  }
+
   return (
     <div className="CommonGUI_Frame">
       <div className="dashboard-wrapper">
@@ -290,11 +298,11 @@ const AdminGUI_archive = () => {
                 <div className="metrics-grid">
                   <div className="metric-card metric-orange">
                     <span className="metric-label">{AdminGUI_describe.Metric_label.metric_3}</span>
-                    <span className="metric-value">8.3</span>
+                    <span className="metric-value">{close_fb}</span>
                   </div>
                   <div className="metric-card metric-gray">
                     <span className="metric-label">{AdminGUI_describe.Metric_label.metric_4}</span>
-                    <span className="metric-value">143</span>
+                    <span className="metric-value">{spam_fb}</span>
                   </div>
                 </div>
               </section>

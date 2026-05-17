@@ -144,7 +144,7 @@ export default function MainGUI() {
             {MainGUI_describe.Contact.GitHub}
           </div>
           <div className="MainGUI_Frame-Introduce_Frame-Contact_Text-3">
-            {MainGUI_describe.Contact.LinkedIn}
+            {MainGUI_describe.Contact.Zalo}
           </div>
         </div>
 

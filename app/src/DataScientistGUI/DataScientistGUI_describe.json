@@ -13,7 +13,7 @@
     {
         "menu_History": "Training history",
         "menu_Evaluation": "Model evaluation",
-        "menu_CNNarch": "CNN architecture",
+        "menu_trainpipeline": "Train pipeline",
         "menu_Dataset": "Dataset"
     },
     "Control_Panel":
