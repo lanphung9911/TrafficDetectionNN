@@ -1,16 +1,16 @@
 {
     "Title": "Traffic Sign System",
     "Version": "Version: v1.0",
-    "ShortDescription": "An end-to-end system that uses computer vision and deep learning to automatically detect traffic signs from images and videos, map their locations, and build a dynamic inventory. \n\nBy visualizing results on an interactive map and providing analytics, it supports smart city management and intelligent transportation systems.",
+    "ShortDescription": "An end-to-end system that uses computer vision and deep learning to automatically detect traffic signs from images (for fiest baseline model). System able to detect 43 different classes of traffic signs with an accuracy over 80%.",
     "WhatHot":
     {
         "text_1": "WHAT'S NEW",
-        "text_2": "Coming new model"
+        "text_2": "YOLOv9 & FasterRCNN"
     },
     "WhatNew":
     {
         "text_1": "WHAT'S HOT",
-        "text_2": "Accuracy: 80%"
+        "text_2": "FasterRCNN & CNN"
     },
     "Feature":
     {

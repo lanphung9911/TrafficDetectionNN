@@ -51,7 +51,7 @@ const UserGUI_feedback = () => {
   }
 
   const [rating, setRating] = useState(5);
-  const [evaluateOption, setEvaluateOption] = useState(null);
+  const [evaluateOption, setEvaluateOption] = useState(UserGUI_describe.Evaluation.Content_1);
   const [attachFile, setAttachFile] = useState(null);
   const [feedbackText, setFeedbackText] = useState("");
   const fileInputRef = React.useRef(null);
@@ -77,8 +77,11 @@ const UserGUI_feedback = () => {
       });
       console.log("Feedback submitted:", result);
       onFeedbackClear();
+
+      alert("Feedback submitted successfully!");
     } catch (e) {
       console.error("Submit failed:", e);
+      alert("Failed to submit feedback. Please try again later.");
     }
   };
 
@@ -89,6 +92,11 @@ const UserGUI_feedback = () => {
     setFeedbackText("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  const total_count = userFeedbackList ? userFeedbackList.length : 0;
+  const avg_confidence = userFeedbackList && userFeedbackList.length > 0
+    ? userFeedbackList.reduce((sum, item) => sum + (item.rating || 0), 0) / userFeedbackList.length
+    : 0;
 
   {/* fetch feedback data when component mounts */}
   useEffect(() => {
@@ -240,11 +248,11 @@ const UserGUI_feedback = () => {
                   <div className="stats-summary">
                     <div className="stat-row">
                       <span className="stat-label">Rating:</span>
-                      <span className="stat-badge">{userFeedbackList.total_count}</span>
+                      <span className="stat-badge">{avg_confidence}%</span>
                     </div>
                     <div className="stat-row">
                       <span className="stat-label">Total feedback:</span>
-                      <span className="stat-badge">{userFeedbackList.confidence}%</span>
+                      <span className="stat-badge">{total_count}</span>
                     </div>
                   </div>
                 )}
