@@ -457,11 +457,11 @@ const DataScientistGUI_TrainPipeline = () => {
                       <button
                         key={button.label}
                         type="button"
-                        className={`cnn-action-btn ${button.className} ${button.label === "Start Training" && isTraining ? "training" : ""}`}
-                        onClick={button.label === "Start Training" ? handleStartTraining : undefined}
-                        disabled={button.label === "Start Training" && trainingStatus === "running" && !isTraining}
+                        className={`cnn-action-btn ${button.className} ${button.label === "Start train CNN model (default FasterRCNN model will update per version instead of retrain)" && isTraining ? "training" : ""}`}
+                        onClick={button.label === "Start train CNN model (default FasterRCNN model will update per version instead of retrain)" ? handleStartTraining : undefined}
+                        disabled={button.label === "Start train CNN model (default FasterRCNN model will update per version instead of retrain)" && trainingStatus === "running" && !isTraining}
                       >
-                        {button.label === "Start Training" && isTraining ? "Stop Training" : button.label}
+                        {button.label === "Start train CNN model (default FasterRCNN model will update per version instead of retrain)" && isTraining ? "Stop Training" : button.label}
                       </button>
                     ))}
                   </div>
