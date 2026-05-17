@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./DataScientistGUI_CNNarch.css";
+import "./DataScientistGUI_TrainPipeline.css";
 import DataScientistGUI_describe from "./DataScientistGUI_describe.json";
 import evaluationData from "../../../backend/src/CNN/classification_report.json";
 import { saveLogs } from "../utils/savelog";
@@ -90,8 +90,8 @@ const actionButtons = [
   // { label: "Show on GitHub", className: "ghost" },
 ];
 
-const DataScientistGUI_CNNarch = () => {
-  const navItems = "menu_CNNarch";
+const DataScientistGUI_TrainPipeline = () => {
+  const navItems = "menu_trainpipeline";
   const email = localStorage.getItem("loginEmail");
   const email_name = email ? email.split("@")[0] : "Data Scientist";
 
@@ -229,7 +229,7 @@ const DataScientistGUI_CNNarch = () => {
       navigate("/DataScientistGUI_history", "_blank");
     } else if (item === "menu_Evaluation") {
       navigate("/DataScientistGUI_evaluation", "_blank");
-    } else if (item === "menu_CNNarch") {
+    } else if (item === "menu_trainpipeline") {
       /* Do nothing */
     } else if (item === "menu_Dataset") {
       navigate("/DataScientistGUI_dataset", "_blank");
@@ -272,9 +272,9 @@ const DataScientistGUI_CNNarch = () => {
                 <div className="nav-icon"></div>
                 <span>{DataScientistGUI_describe.Navi_Menu.menu_Evaluation}</span>
               </button>
-              <button className={`nav-item ${navItems === "menu_CNNarch" ? "active" : ""}`}>
+              <button className={`nav-item ${navItems === "menu_trainpipeline" ? "active" : ""}`}>
                 <div className="nav-icon"></div>
-                <span>{DataScientistGUI_describe.Navi_Menu.menu_CNNarch}</span>
+                <span>{DataScientistGUI_describe.Navi_Menu.menu_trainpipeline}</span>
               </button>
               <button className="nav-item" onClick={() => onNavItemClick("menu_Dataset")}>
                 <div className="nav-icon"></div>
@@ -502,4 +502,4 @@ const DataScientistGUI_CNNarch = () => {
   );
 };
 
-export default DataScientistGUI_CNNarch;
+export default DataScientistGUI_TrainPipeline;

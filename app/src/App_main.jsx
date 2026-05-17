@@ -15,7 +15,7 @@ import AdminGUI_archive from './AdminGUI/AdminGUI_archive';
 import AdminGUI_monitoring from './AdminGUI/AdminGUI_monitoring';
 import DataScientistGUI_history from './DataScientistGUI/DataScientistGUI_history';
 import DataScientistGUI_evaluation from './DataScientistGUI/DataScientistGUI_evaluation';
-import DataScientistGUI_CNNarch from './DataScientistGUI/DataScientistGUI_CNNarch';
+import DataScientistGUI_TrainPipeline from './DataScientistGUI/DataScientistGUI_TrainPipeline';
 import DataScientistGUI_Dataset from './DataScientistGUI/DataScientistGUI_Dataset';
 
 /* Training Context Provider */
@@ -38,7 +38,7 @@ export default function App() {
           <Route path="/AdminGUI_monitoring" element={<AdminGUI_monitoring />} />
           <Route path="/DataScientistGUI_history" element={<DataScientistGUI_history />} />
           <Route path="/DataScientistGUI_evaluation" element={<DataScientistGUI_evaluation />} />
-          <Route path="/DataScientistGUI_CNNarch" element={<DataScientistGUI_CNNarch />} />
+          <Route path="/DataScientistGUI_TrainPipeline" element={<DataScientistGUI_TrainPipeline />} />
           <Route path="/DataScientistGUI_Dataset" element={<DataScientistGUI_Dataset />} />
         </Routes>
       </TrainingProvider>
