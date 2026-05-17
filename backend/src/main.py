@@ -44,9 +44,9 @@ os.makedirs(config.FEEDBACK_DIR, exist_ok=True)
 os.makedirs(config.FEEDBACK_ATTACHMENT_DIR, exist_ok=True)
 os.makedirs(config.ANALYSISLOGS_DIR, exist_ok=True)
 os.makedirs(config.INPUT_USER_DIR, exist_ok=True)
-app.mount(f"{config.UPLOAD_DIR}".replace(".", ""), StaticFiles(directory=config.UPLOAD_DIR), name="upload")
-app.mount(f"{config.OUTPUT_DIR}".replace(".", ""), StaticFiles(directory=config.OUTPUT_DIR), name="output_logs")
-app.mount(f"{config.ANALYSISLOGS_DIR}".replace(".", ""), StaticFiles(directory=config.ANALYSISLOGS_DIR), name="analysis_logs")
+app.mount(f"/{config.UPLOAD_DIR}".replace(".", ""), StaticFiles(directory=config.UPLOAD_DIR), name="upload")
+app.mount(f"/{config.OUTPUT_DIR}".replace(".", ""), StaticFiles(directory=config.OUTPUT_DIR), name="output_logs")
+app.mount(f"/{config.ANALYSISLOGS_DIR}".replace(".", ""), StaticFiles(directory=config.ANALYSISLOGS_DIR), name="analysis_logs")
 app.mount("/reference", StaticFiles(directory=config.REFDATA_DIR), name="reference")
 
 # create empty json files if not exist
