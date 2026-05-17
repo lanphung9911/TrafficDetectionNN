@@ -79,6 +79,8 @@ const UserGUI_feedback = () => {
       onFeedbackClear();
 
       alert("Feedback submitted successfully!");
+
+      window.location.reload(); // Refresh page
     } catch (e) {
       console.error("Submit failed:", e);
       alert("Failed to submit feedback. Please try again later.");
@@ -179,7 +181,7 @@ const UserGUI_feedback = () => {
               <div className="card feedback-card">
                 <div className="fb-row-inline">
                   <span className="fb-label">{UserGUI_describe.Feedback.Feedback_Id}:</span>
-                  <span className="fb-user-id">1234567890</span>
+                  <span className="fb-user-id">{email_name}_{total_count+1}</span>
                 </div>
                 <span className="fb-label">{UserGUI_describe.Feedback.SubTitle_1}</span>
                 <textarea
