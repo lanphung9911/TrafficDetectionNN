@@ -357,8 +357,8 @@ echo Creating environment files...
 :: Default values
 set "HOST=0.0.0.0"
 set "PORT=8000"
-set "SYSTEM_VERSION=0_0"
-set "MY_SECRET=dev-secret-change-in-production"
+set "SYSTEM_VERSION=1"
+set "MY_SECRET=change_this_secret"
 
 echo.
 echo Configure backend settings (press Enter for defaults):
@@ -383,14 +383,14 @@ if not "!INPUT_PORT!"=="" set "PORT=!INPUT_PORT!"
     echo PRE_FIX_AUTH=/api/auth
     echo PRE_FIX_INPUT=/api/input
     echo PRE_FIX_USER=/api/user
-    echo OUTPUT_DIR=output_logs
-    echo UPLOAD_DIR=upload
-    echo LIST_FOLDER_DIR=list-files
-    echo REFDATA_DIR=reference
-    echo FEEDBACK_DIR=feedback
-    echo AUTH_USER_DIR=auth_login
-    echo INPUT_USER_DIR=input_users
-    echo ANALYSISLOGS_DIR=analysis_logs
+    echo OUTPUT_DIR=./output_logs
+    echo UPLOAD_DIR=./upload
+    echo LIST_FOLDER_DIR=/list-files
+    echo REFDATA_DIR=./reference
+    echo FEEDBACK_DIR=./feedback
+    echo AUTH_USER_DIR=./auth_login
+    echo INPUT_USER_DIR=./input_users
+    echo ANALYSISLOGS_DIR=./analysis_logs
 )
 echo [OK] Backend .env created at backend\src\.env
 
