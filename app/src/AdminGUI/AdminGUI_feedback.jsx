@@ -207,6 +207,15 @@ const AdminGUI_feedback = () => {
     });
   };
 
+  let avg_rating = 0;
+  let total_rating = 0;
+  let count_rating = 0;
+  for (const item of feedbackItems) {
+    total_rating += item['rating'] || 0;
+    count_rating += item['rating'] ? 1 : 0;
+  }
+  avg_rating = count_rating > 0 ? total_rating / count_rating : 0;
+
   return (
     <div className="CommonGUI_Frame">
       <div className="dashboard-wrapper">
@@ -328,11 +337,11 @@ const AdminGUI_feedback = () => {
                 <div className="metrics-grid">
                   <div className="metric-card metric-green">
                     <span className="metric-label">{AdminGUI_describe.Metric_label.metric_1}</span>
-                    <span className="metric-value">8.3</span>
+                    <span className="metric-value">{avg_rating.toFixed(1)}</span>
                   </div>
                   <div className="metric-card metric-blue">
                     <span className="metric-label">{AdminGUI_describe.Metric_label.metric_2}</span>
-                    <span className="metric-value">143</span>
+                    <span className="metric-value">{feedbackItems.length}</span>
                   </div>
                 </div>
               </section>
