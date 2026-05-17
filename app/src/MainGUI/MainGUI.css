@@ -83,7 +83,7 @@
   padding: 0px 35px;
 
   position: absolute;
-  width: 418px;
+  width: 600px;
   height: 114px;
   right: 20px;
   bottom: 20px;
@@ -97,12 +97,12 @@
 .MainGUI_Frame-Introduce_Frame-Contact_Text-1,
 .MainGUI_Frame-Introduce_Frame-Contact_Text-2,
 .MainGUI_Frame-Introduce_Frame-Contact_Text-3 {
-  width: 348px;
+  width: 500px;
   height: 38px;
 
   font-family: 'Merriweather';
   font-weight: 700;
-  font-size: 18px;
+  font-size: 13px;
   line-height: 22px;
 
   display: flex;

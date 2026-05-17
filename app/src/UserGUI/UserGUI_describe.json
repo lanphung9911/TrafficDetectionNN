@@ -7,7 +7,7 @@
     "DashboardTitle":
     {
         "MainTitle": "User dashboard",
-        "SubTitle": "Dashboard for user that can monitoring the map with traffic sign located or run-time detected when vehicle"
+        "SubTitle": "Dashboard for user that can detect traffic signs, provide feedback, and review the evaluation of the model performance"
     },
     "Navi_Menu":
     {
