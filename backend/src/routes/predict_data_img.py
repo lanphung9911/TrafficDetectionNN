@@ -97,7 +97,7 @@ if model_classify_file:
     myCNNmodel = RecognitionModel_V1(num_classes=43)
 
     if os.path.exists(model_classify_path):
-        myCNNmodel = torch.load(model_classify_path, map_location=device)
+        myCNNmodel = torch.load(model_classify_path, map_location=device, weights_only=False)
         myCNNmodel.to(device)
         myCNNmodel.eval()  # Set model to evaluation mode
     else:
